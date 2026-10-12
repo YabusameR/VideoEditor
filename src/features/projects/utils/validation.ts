@@ -70,53 +70,17 @@ export interface ProjectTemplate {
 }
 
 /**
- * Project templates for short-form platforms. Vertical 9:16 comes first and is
- * the default; square and 4:5 cover feed posts.
+ * The one format this editor makes: vertical 9:16 for TikTok / YouTube Shorts
+ * (also fits Instagram Reels). New projects are created straight from it.
  */
 export const PROJECT_TEMPLATES: readonly ProjectTemplate[] = [
   {
     id: 'vertical-9-16',
     platform: 'Vertical',
-    name: 'Shorts / TikTok / Reels',
+    name: 'TikTok / YouTube Shorts',
     namePrefix: 'Vertical',
     width: 1080,
     height: 1920,
-    fps: 30,
-  },
-  {
-    id: 'vertical-9-16-60fps',
-    platform: 'Vertical',
-    name: 'Vertical 60fps',
-    namePrefix: 'Vertical 60fps',
-    width: 1080,
-    height: 1920,
-    fps: 60,
-  },
-  {
-    id: 'vertical-720p',
-    platform: 'Vertical',
-    name: 'Vertical 720p',
-    namePrefix: 'Vertical 720p',
-    width: 720,
-    height: 1280,
-    fps: 30,
-  },
-  {
-    id: 'instagram-portrait',
-    platform: 'Instagram',
-    name: 'Instagram Portrait',
-    namePrefix: 'Instagram Portrait',
-    width: 1080,
-    height: 1350,
-    fps: 30,
-  },
-  {
-    id: 'instagram-square',
-    platform: 'Instagram',
-    name: 'Instagram Square',
-    namePrefix: 'Instagram Square',
-    width: 1080,
-    height: 1080,
     fps: 30,
   },
 ] as const

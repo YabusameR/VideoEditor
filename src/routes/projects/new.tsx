@@ -1,17 +1,13 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { toast } from 'sonner'
+import { Loader2 } from 'lucide-react'
 import { createLogger } from '@/shared/logging/logger'
-import { InlineCreateProjectForm } from '@/features/projects/components/project-form'
 import { useCreateProject } from '@/features/projects/hooks/use-project-actions'
 import { useProjectStore } from '@/features/projects/stores/project-store'
-import { FreeCutLogo } from '@/components/brand/freecut-logo'
+import { generateTemplateName } from '@/features/projects/utils/project-helpers'
+import { DEFAULT_PROJECT_TEMPLATE } from '@/features/projects/utils/validation'
 import { Button } from '@/components/ui/button'
-import { Github } from 'lucide-react'
-import { DiscordIcon } from '@/components/brand/discord-icon'
-import { DISCORD_INVITE_URL } from '@/config/community'
-import type { ProjectFormData } from '@/features/projects/utils/validation'
 
 const logger = createLogger('NewProject')
 
@@ -27,69 +23,60 @@ export const Route = createFileRoute('/projects/new')({
   },
 })
 
+/**
+ * Creating a short needs no choices: one vertical 1080×1920 / 30fps format,
+ * an auto-numbered name, then straight into the editor.
+ */
 function NewProject() {
   const navigate = useNavigate()
   const { t } = useTranslation()
-  const [isSubmitting, setIsSubmitting] = useState(false)
   const createProject = useCreateProject()
+  const [error, setError] = useState<string | null>(null)
+  // StrictMode runs effects twice; only ever create one project per visit.
+  const startedRef = useRef(false)
 
-  const handleSubmit = async (data: ProjectFormData) => {
-    setIsSubmitting(true)
+  useEffect(() => {
+    if (startedRef.current) return
+    startedRef.current = true
 
-    try {
-      const result = await createProject(data)
-
+    void (async () => {
+      const existingNames = useProjectStore.getState().projects.map((p) => p.name)
+      const result = await createProject({
+        name: generateTemplateName(t('shorts.newProject.namePrefix'), existingNames),
+        description: '',
+        width: DEFAULT_PROJECT_TEMPLATE.width,
+        height: DEFAULT_PROJECT_TEMPLATE.height,
+        fps: DEFAULT_PROJECT_TEMPLATE.fps,
+      })
       if (result.success && result.project) {
-        // Navigate to editor with new project
         navigate({
           to: '/editor/$projectId',
           params: { projectId: result.project.id },
+          replace: true,
         })
       } else {
-        toast.error(t('projects.toasts.createFailed'), { description: result.error })
-        setIsSubmitting(false)
+        logger.error('Failed to create project:', result.error)
+        setError(result.error ?? t('projects.tryAgain'))
       }
-    } catch (error) {
-      logger.error('Failed to create project:', error)
-      toast.error(t('projects.toasts.createFailed'), { description: t('projects.tryAgain') })
-      setIsSubmitting(false)
-    }
-  }
+    })()
+  }, [createProject, navigate, t])
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="panel-header border-b border-border">
-        <div className="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-          <Link to="/">
-            <FreeCutLogo variant="full" size="md" className="hover:opacity-80 transition-opacity" />
-          </Link>
-          <div className="flex items-center gap-3">
-            <Button variant="outline" size="lg" className="gap-2" asChild>
-              <a href={DISCORD_INVITE_URL} target="_blank" rel="noopener noreferrer">
-                <DiscordIcon className="w-4 h-4" />
-                Discord
-              </a>
-            </Button>
-            <Button variant="outline" size="icon" className="h-10 w-10" asChild>
-              <a
-                href="https://github.com/walterlow/freecut"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-tooltip={t('projects.viewOnGitHub')}
-                data-tooltip-side="left"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <InlineCreateProjectForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
-      </div>
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-background px-6 text-center">
+      {error ? (
+        <>
+          <p className="text-sm text-destructive">{t('projects.toasts.createFailed')}</p>
+          <p className="text-xs text-muted-foreground">{error}</p>
+          <Button variant="outline" asChild>
+            <Link to="/projects">{t('shorts.newProject.backToList')}</Link>
+          </Button>
+        </>
+      ) : (
+        <>
+          <Loader2 className="h-6 w-6 animate-spin text-primary" />
+          <p className="text-sm text-muted-foreground">{t('shorts.newProject.creating')}</p>
+        </>
+      )}
     </div>
   )
 }

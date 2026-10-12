@@ -27,10 +27,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
 import { SettingsDialog } from './settings-dialog'
 import { ShortcutsDialog } from './shortcuts-dialog'
 import { UnsavedChangesDialog } from './unsaved-changes-dialog'
+import { formatSeconds } from '../utils/format-seconds'
+import { WizardStepper } from './shorts-wizard/wizard-stepper'
 import { EDITOR_LAYOUT_CSS_VALUES } from '@/config/editor-layout'
 import { cn } from '@/shared/ui/cn'
 import { LanguageSwitcher } from '@/shared/ui/language-switcher'
@@ -41,13 +42,6 @@ import {
   useShortsStore,
   type ShortsSafeZonePlatform,
 } from '@/shared/state/shorts'
-
-function formatSeconds(seconds: number): string {
-  const total = Math.max(0, Math.round(seconds))
-  const minutes = Math.floor(total / 60)
-  const rest = total % 60
-  return `${minutes}:${String(rest).padStart(2, '0')}`
-}
 
 const SaveDirtyIndicator = memo(function SaveDirtyIndicator() {
   const isDirty = useTimelineStore((state) => state.isDirty)
@@ -60,7 +54,7 @@ const SaveDirtyIndicator = memo(function SaveDirtyIndicator() {
  * Length of the cut against the chosen target (15s / 30s / 60s …). Short-form
  * platforms cap or penalise length, so this is the number the editor watches.
  */
-const DurationGauge = memo(function DurationGauge({ fps }: { fps: number }) {
+export const DurationGauge = memo(function DurationGauge({ fps }: { fps: number }) {
   const { t } = useTranslation()
   const maxItemEndFrame = useItemsStore((state) => state.maxItemEndFrame)
   const targetDurationSec = useShortsStore((s) => s.targetDurationSec)
@@ -120,7 +114,7 @@ const DurationGauge = memo(function DurationGauge({ fps }: { fps: number }) {
   )
 })
 
-const SafeZoneSelect = memo(function SafeZoneSelect() {
+export const SafeZoneSelect = memo(function SafeZoneSelect({ className }: { className?: string }) {
   const { t } = useTranslation()
   const platform = useShortsStore((s) => s.safeZonePlatform)
   const setPlatform = useShortsStore((s) => s.setSafeZonePlatform)
@@ -131,7 +125,7 @@ const SafeZoneSelect = memo(function SafeZoneSelect() {
       onValueChange={(value) => setPlatform(value as ShortsSafeZonePlatform)}
     >
       <SelectTrigger
-        className="h-7 w-[150px] gap-1.5 text-xs"
+        className={cn('h-7 w-[150px] gap-1.5 text-xs', className)}
         aria-label={t('shorts.safeZone.label')}
       >
         <ScanLine className="h-3.5 w-3.5 shrink-0" />
@@ -237,10 +231,8 @@ export const ShortToolbar = memo(function ShortToolbar({
         </span>
       </div>
 
-      <div className="flex flex-1 items-center justify-center gap-4">
-        <DurationGauge fps={project.fps} />
-        <Separator orientation="vertical" className="h-5" />
-        <SafeZoneSelect />
+      <div className="flex min-w-0 flex-1 items-center justify-center">
+        <WizardStepper />
       </div>
 
       <div className="flex items-center gap-1.5">

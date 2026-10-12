@@ -5,12 +5,11 @@ import { create } from 'zustand'
  * preview, and the target length the toolbar's duration gauge measures against.
  * Purely presentational — never touches project/timeline state.
  */
-export type ShortsSafeZonePlatform = 'off' | 'tiktok' | 'reels' | 'shorts'
+export type ShortsSafeZonePlatform = 'off' | 'tiktok' | 'shorts'
 
 export const SHORTS_SAFE_ZONE_PLATFORMS: readonly ShortsSafeZonePlatform[] = [
   'off',
   'tiktok',
-  'reels',
   'shorts',
 ]
 
@@ -26,7 +25,6 @@ export const SHORTS_SAFE_ZONE_INSETS: Record<
   { top: number; bottom: number; left: number; right: number }
 > = {
   tiktok: { top: 0.0677, bottom: 0.2, left: 0.0556, right: 0.1481 },
-  reels: { top: 0.1042, bottom: 0.2083, left: 0.0556, right: 0.1204 },
   shorts: { top: 0.0781, bottom: 0.2083, left: 0.0556, right: 0.1481 },
 }
 
@@ -56,16 +54,24 @@ function loadTargetDuration(): number {
   return DEFAULT_TARGET_DURATION_SEC
 }
 
+/** Steps of the editor wizard, in order. */
+export const SHORTS_WIZARD_STEPS = ['import', 'cut', 'captions', 'sound', 'export'] as const
+export type ShortsWizardStep = (typeof SHORTS_WIZARD_STEPS)[number]
+
 interface ShortsState {
   safeZonePlatform: ShortsSafeZonePlatform
   targetDurationSec: number
+  wizardStep: ShortsWizardStep
   setSafeZonePlatform: (platform: ShortsSafeZonePlatform) => void
   setTargetDurationSec: (seconds: number) => void
+  setWizardStep: (step: ShortsWizardStep) => void
 }
 
 export const useShortsStore = create<ShortsState>((set) => ({
   safeZonePlatform: loadSafeZonePlatform(),
   targetDurationSec: loadTargetDuration(),
+  wizardStep: 'import',
+  setWizardStep: (wizardStep) => set({ wizardStep }),
   setSafeZonePlatform: (safeZonePlatform) => {
     try {
       localStorage.setItem(SAFE_ZONE_STORAGE_KEY, safeZonePlatform)

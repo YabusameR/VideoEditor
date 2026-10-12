@@ -24,3 +24,4 @@ export const importEmbeddedSubtitleTrackPickerHost = () =>
   import('@/features/media-library/components/embedded-subtitle-track-picker-host')
 export const importSubtitleScanProgressDialog = () =>
   import('@/features/media-library/components/subtitle-scan-progress-dialog')
+export const importAutoCaptions = () => import('@/features/media-library/services/auto-captions')

@@ -24,7 +24,7 @@ describe('SafeZoneOverlay', () => {
   })
 
   it('persists the chosen platform', () => {
-    act(() => useShortsStore.getState().setSafeZonePlatform('reels'))
-    expect(localStorage.getItem('shorts:safeZonePlatform')).toBe('reels')
+    act(() => useShortsStore.getState().setSafeZonePlatform('shorts'))
+    expect(localStorage.getItem('shorts:safeZonePlatform')).toBe('shorts')
   })
 })
