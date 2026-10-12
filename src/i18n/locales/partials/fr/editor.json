@@ -883,6 +883,32 @@
     "colorPanel": {
       "emptyState": "Sélectionnez un clip à étalonner",
       "adjustmentLayerLabel": "Étalonnage"
+    },
+    "subtitleAnimation": {
+      "title": "Caption change animation",
+      "hint": "Plays on every caption as it appears and disappears. Only the selected captions are animated.",
+      "inLabel": "Appear",
+      "outLabel": "Disappear",
+      "speedLabel": "Speed",
+      "in": {
+        "none": "None",
+        "fade": "Fade",
+        "pop": "Pop",
+        "slide-up": "Slide up",
+        "zoom-in": "Zoom"
+      },
+      "out": {
+        "none": "None",
+        "fade": "Fade",
+        "shrink": "Shrink",
+        "slide-up": "Slide up"
+      },
+      "speed": {
+        "fast": "Fast",
+        "normal": "Normal",
+        "slow": "Slow"
+      },
+      "wholeClipToggle": "Animate the whole caption track (start and end only)"
     }
   }
 }

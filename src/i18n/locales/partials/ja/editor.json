@@ -883,6 +883,32 @@
     "colorPanel": {
       "emptyState": "グレーディングするクリップを選択してください",
       "adjustmentLayerLabel": "グレーディング"
+    },
+    "subtitleAnimation": {
+      "title": "テロップの切り替わりアニメーション",
+      "hint": "テロップが1つずつ出るとき・消えるときに毎回動きます。選んだテロップにだけ付きます。",
+      "inLabel": "出るとき",
+      "outLabel": "消えるとき",
+      "speedLabel": "速さ",
+      "in": {
+        "none": "なし",
+        "fade": "フェード",
+        "pop": "ポップ",
+        "slide-up": "下から",
+        "zoom-in": "ズーム"
+      },
+      "out": {
+        "none": "なし",
+        "fade": "フェード",
+        "shrink": "縮む",
+        "slide-up": "上へ"
+      },
+      "speed": {
+        "fast": "速い",
+        "normal": "ふつう",
+        "slow": "ゆっくり"
+      },
+      "wholeClipToggle": "テロップ全体にアニメーションを付ける（最初と最後だけ）"
     }
   }
 }

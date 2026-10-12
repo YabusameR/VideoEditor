@@ -18,7 +18,7 @@ export interface EditableCue {
 }
 
 /** Shortest cue an edit may produce. */
-export const MIN_EDIT_CUE_SECONDS = 0.05
+const MIN_EDIT_CUE_SECONDS = 0.05
 
 /** Two cues closer than this are treated as touching (one shared boundary). */
 const TOUCHING_EPSILON_SECONDS = 0.05

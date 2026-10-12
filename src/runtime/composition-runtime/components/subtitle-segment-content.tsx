@@ -1,9 +1,12 @@
 import React, { useMemo } from 'react'
 
 import { useSequenceContext } from '@/runtime/composition-runtime/deps/player'
+import { TEXT_DEFAULTS } from '@/shared/typography/text-style'
+import { evaluateSubtitleCueAnimation } from '@/shared/utils/subtitle-cue-animation'
 import { parseSubtitleCueText } from '@/shared/utils/subtitle-cue-format'
 import type { SubtitleSegmentItem, TextItem } from '@/types/timeline'
 
+import { useCompositionSpace } from '../contexts/composition-space-context'
 import { useVideoConfig } from '../hooks/use-player-compat'
 import { TextContent } from './text-content'
 
@@ -19,6 +22,7 @@ export const SubtitleSegmentContent: React.FC<{
   item: SubtitleSegmentItem & { _sequenceFrameOffset?: number }
 }> = ({ item }) => {
   const sequenceContext = useSequenceContext()
+  const compositionSpace = useCompositionSpace()
   const { fps } = useVideoConfig()
   const relativeFrame = (sequenceContext?.localFrame ?? 0) - (item._sequenceFrameOffset ?? 0)
   const secondsIntoSegment = relativeFrame / fps
@@ -76,7 +80,29 @@ export const SubtitleSegmentContent: React.FC<{
   )
 
   if (!activeCue || !parsed || parsed.isEmpty) return null
-  return <TextContent item={syntheticTextItem} />
+
+  const cueMotion = evaluateSubtitleCueAnimation(
+    item.cueAnimation,
+    secondsIntoSegment - activeCue.startSeconds,
+    activeCue.endSeconds - activeCue.startSeconds,
+  )
+  if (!cueMotion) return <TextContent item={syntheticTextItem} />
+
+  const offsetPx =
+    cueMotion.offsetY * (item.fontSize ?? TEXT_DEFAULTS.fontSize) * (compositionSpace?.scale ?? 1)
+  return (
+    <div
+      style={{
+        width: '100%',
+        height: '100%',
+        opacity: cueMotion.opacity,
+        transform: `translateY(${offsetPx}px) scale(${cueMotion.scale})`,
+        transformOrigin: 'center',
+      }}
+    >
+      <TextContent item={syntheticTextItem} />
+    </div>
+  )
 }
 
 /**
