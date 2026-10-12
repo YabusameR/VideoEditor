@@ -7,6 +7,7 @@ import { useTimelineStore } from '@/features/editor/deps/timeline-store'
 import type { SubtitleSegmentItem, TextItem } from '@/types/timeline'
 
 import { ColorPicker, PropertyRow, SliderInput } from '../components'
+import { FontPicker } from './font-picker'
 import {
   CAPTION_STYLE_PRESETS,
   type CaptionStylePreset,
@@ -31,7 +32,7 @@ interface CaptionStyleControlsProps {
  * Caption / subtitle look-and-feel editor.
  *
  * Surfaces the typography subset shared between {@link TextItem} (captions)
- * and {@link SubtitleSegmentItem}: presets, color, font size, vertical
+ * and {@link SubtitleSegmentItem}: presets, font, color, font size, vertical
  * position, and a background-box toggle. Designed to be embedded inside a
  * larger section (e.g. {@link SubtitleSection}).
  */
@@ -125,6 +126,16 @@ export const CaptionStyleControls = memo(function CaptionStyleControls({
       </div>
 
       <Separator className="my-1" />
+
+      <PropertyRow label={t('editor.captionStyleControls.font')}>
+        <div className="flex-1 min-w-0">
+          <FontPicker
+            value={sample.fontFamily}
+            previewText={t('editor.captionStyleControls.font')}
+            onValueChange={(fontFamily) => applyPatch({ fontFamily })}
+          />
+        </div>
+      </PropertyRow>
 
       <ColorPicker
         label={t('editor.captionStyleControls.color')}

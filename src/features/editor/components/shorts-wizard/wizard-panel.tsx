@@ -72,6 +72,9 @@ function Hint({ children }: { children: ReactNode }) {
   return <p className="text-xs leading-relaxed text-muted-foreground">{children}</p>
 }
 
+/** Starting font for auto captions in Japanese (changeable in the caption panel). */
+const JAPANESE_CAPTION_FONT = 'Noto Sans JP'
+
 const ImportStep = memo(function ImportStep() {
   const { t } = useTranslation()
   const importMedia = useMediaLibraryStore((s) => s.importMedia)
@@ -188,6 +191,9 @@ const CaptionsStep = memo(function CaptionsStep() {
       const result = await generateTimelineCaptions({
         model,
         language: isJapanese ? 'ja' : undefined,
+        // The caption presets use Latin-only fonts; start Japanese captions
+        // on a font with Japanese glyphs so preview and export match.
+        defaultStyle: isJapanese ? { fontFamily: JAPANESE_CAPTION_FONT } : undefined,
       })
       if (result.captionedMediaCount > 0) {
         toast.success(

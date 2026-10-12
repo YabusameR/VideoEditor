@@ -1,11 +1,14 @@
 /**
  * Auto captions for the whole timeline (shorts wizard "テロップ" step):
- * transcribe every clip's source once, then lay the transcript out as
- * caption items under each clip.
+ * transcribe every clip's source once, then place the transcript as separate
+ * caption items on their own caption track, where they can be selected,
+ * restyled, moved and trimmed independently of the clips.
  */
 
 import type { MediaTranscriptModel } from '@/types/storage'
+import type { TimelineItem } from '@/types/timeline'
 import { useTimelineStore } from '@/features/media-library/deps/timeline-stores'
+import type { CaptionTextItemTemplate } from '../utils/caption-items'
 import { mediaTranscriptionService } from './media-transcription-service'
 import { runMediaTranscriptionJob } from './media-transcription-runner'
 
@@ -41,9 +44,31 @@ function collectCaptionTargets(): Map<string, string[]> {
   return targets
 }
 
+/**
+ * Clip-attached ("virtual") transcript captions render on top of the separate
+ * caption items, and the timeline auto-enables them as soon as a transcript
+ * exists. Switch them off for this media so captions show exactly once.
+ */
+function disableClipAttachedCaptions(mediaId: string): void {
+  const { items, updateItem } = useTimelineStore.getState()
+  for (const item of items) {
+    if (
+      (item.type === 'video' || item.type === 'audio') &&
+      item.mediaId === mediaId &&
+      item.transcriptCaptions?.enabled
+    ) {
+      updateItem(item.id, {
+        transcriptCaptions: { ...item.transcriptCaptions, enabled: false, updatedAt: Date.now() },
+      } as Partial<TimelineItem>)
+    }
+  }
+}
+
 export async function generateTimelineCaptions(options: {
   model: MediaTranscriptModel
   language?: string
+  /** Style for brand-new captions, e.g. a font that has Japanese glyphs. */
+  defaultStyle?: Partial<CaptionTextItemTemplate>
 }): Promise<AutoCaptionResult> {
   const targets = collectCaptionTargets()
   let captionedMediaCount = 0
@@ -60,10 +85,12 @@ export async function generateTimelineCaptions(options: {
         })
         if (result.status === 'cancelled') continue
       }
-      await mediaTranscriptionService.enableTranscriptCaptions(mediaId, {
+      await mediaTranscriptionService.insertTranscriptAsCaptions(mediaId, {
         clipIds,
         replaceExisting: true,
+        defaultStyle: options.defaultStyle,
       })
+      disableClipAttachedCaptions(mediaId)
       captionedMediaCount += 1
     } catch {
       failedMediaCount += 1

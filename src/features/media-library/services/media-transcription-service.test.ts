@@ -270,6 +270,52 @@ describe('mediaTranscriptionService.insertTranscriptAsCaptions', () => {
     expect(removeItems).not.toHaveBeenCalled()
   })
 
+  it('applies defaultStyle on top of the caption preset for new captions', async () => {
+    const clip: VideoItem = {
+      id: 'clip-1',
+      type: 'video',
+      trackId: 'track-video',
+      from: 0,
+      durationInFrames: 90,
+      label: 'Clip',
+      mediaId: 'media-1',
+      src: 'blob:test',
+      sourceStart: 0,
+      sourceEnd: 90,
+      sourceDuration: 90,
+      sourceFps: 30,
+      speed: 1,
+    }
+    const addItems = vi.fn()
+    useTimelineStoreGetStateMock.mockReturnValue({
+      fps: 30,
+      tracks: [makeTrack('track-video', 0)],
+      items: [clip],
+      setTracks: vi.fn(),
+      removeItems: vi.fn(),
+      addItems,
+    })
+    getTranscriptMock.mockResolvedValue({
+      id: 'media-1',
+      mediaId: 'media-1',
+      model: 'whisper-small',
+      language: 'ja',
+      quantization: 'q8',
+      text: 'こんにちは',
+      segments: [{ text: 'こんにちは', start: 0, end: 2 }],
+      createdAt: Date.now(),
+      updatedAt: Date.now(),
+    } satisfies MediaTranscript)
+
+    await mediaTranscriptionService.insertTranscriptAsCaptions('media-1', {
+      clipIds: ['clip-1'],
+      defaultStyle: { fontFamily: 'Noto Sans JP' },
+    })
+
+    const insertedItems = addItems.mock.calls[0]![0] as TimelineItem[]
+    expect(insertedItems[0]).toMatchObject({ type: 'subtitle', fontFamily: 'Noto Sans JP' })
+  })
+
   it('does not reuse an audio track when regenerating transcript captions', async () => {
     const clip: VideoItem = {
       id: 'clip-1',
