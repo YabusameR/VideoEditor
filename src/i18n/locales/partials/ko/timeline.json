@@ -337,6 +337,10 @@
       "adjustClipVolume": "클립 볼륨 조정"
     },
     "emptyTitle": "편집을 시작하려면 여기에 미디어를 드래그하세요",
-    "emptyDescription": "클립을 트랙에 놓은 다음 Space를 눌러 미리 봅니다."
+    "emptyDescription": "클립을 트랙에 놓은 다음 Space를 눌러 미리 봅니다.",
+    "subtitleStrip": {
+      "label": "Captions · {{count}}",
+      "moveBoundary": "Move the boundary after caption {{number}}"
+    }
   }
 }

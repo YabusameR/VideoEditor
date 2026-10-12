@@ -9,7 +9,9 @@
  */
 
 import type { SubtitleSegmentItem, TextItem } from '@/types/timeline'
+import { evaluateSubtitleCueAnimation } from '@/shared/utils/subtitle-cue-animation'
 import { parseSubtitleCueText } from '@/shared/utils/subtitle-cue-format'
+import { TEXT_DEFAULTS } from '@/shared/typography/text-style'
 import {
   layoutTextBlock,
   lineInkWidth,
@@ -523,7 +525,28 @@ export function renderSubtitleSegmentItem(
     stroke: item.stroke,
     transform: item.transform,
   }
+
+  const cueMotion = evaluateSubtitleCueAnimation(
+    item.cueAnimation,
+    secondsIntoSegment - activeCue.startSeconds,
+    activeCue.endSeconds - activeCue.startSeconds,
+  )
+  if (!cueMotion) {
+    renderTextItem(ctx, ephemeralText, transform, rctx)
+    return
+  }
+
+  // Scale about the text box centre, then slide by a font-relative offset.
+  const centerX = rctx.canvasSettings.width / 2 + transform.x
+  const centerY = rctx.canvasSettings.height / 2 + transform.y
+  const offsetY = cueMotion.offsetY * (item.fontSize ?? TEXT_DEFAULTS.fontSize)
+  ctx.save()
+  ctx.globalAlpha *= cueMotion.opacity
+  ctx.translate(centerX, centerY + offsetY)
+  ctx.scale(cueMotion.scale, cueMotion.scale)
+  ctx.translate(-centerX, -centerY)
   renderTextItem(ctx, ephemeralText, transform, rctx)
+  ctx.restore()
 }
 
 function findActiveSubtitleCue<T extends { startSeconds: number; endSeconds: number }>(

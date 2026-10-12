@@ -337,6 +337,10 @@
       "adjustClipVolume": "调整剪辑音量"
     },
     "emptyTitle": "将媒体拖到这里开始编辑",
-    "emptyDescription": "把片段拖到轨道上，然后按空格键预览。"
+    "emptyDescription": "把片段拖到轨道上，然后按空格键预览。",
+    "subtitleStrip": {
+      "label": "Captions · {{count}}",
+      "moveBoundary": "Move the boundary after caption {{number}}"
+    }
   }
 }

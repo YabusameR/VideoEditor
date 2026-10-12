@@ -337,6 +337,10 @@
       "adjustClipVolume": "Ajustar volume do clipe"
     },
     "emptyTitle": "Arraste mídia aqui para começar a editar",
-    "emptyDescription": "Solte clipes nas faixas e pressione Espaço para visualizar."
+    "emptyDescription": "Solte clipes nas faixas e pressione Espaço para visualizar.",
+    "subtitleStrip": {
+      "label": "Captions · {{count}}",
+      "moveBoundary": "Move the boundary after caption {{number}}"
+    }
   }
 }

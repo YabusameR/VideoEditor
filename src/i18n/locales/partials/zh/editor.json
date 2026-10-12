@@ -565,6 +565,7 @@
       "invert": "反转"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter splits the caption at the cursor. Backspace at the start joins it to the previous one.",
       "title": "字幕",
       "multiSelectHint": "已选择 {{segments}} 个段 · 共 {{cues}} 条字幕。样式应用于全部。选择单个段以编辑单条字幕。",
       "trackLabel": "轨道 {{number}}",
@@ -882,6 +883,32 @@
     "colorPanel": {
       "emptyState": "选择要调色的剪辑",
       "adjustmentLayerLabel": "调色"
+    },
+    "subtitleAnimation": {
+      "title": "Caption change animation",
+      "hint": "Plays on every caption as it appears and disappears. Only the selected captions are animated.",
+      "inLabel": "Appear",
+      "outLabel": "Disappear",
+      "speedLabel": "Speed",
+      "in": {
+        "none": "None",
+        "fade": "Fade",
+        "pop": "Pop",
+        "slide-up": "Slide up",
+        "zoom-in": "Zoom"
+      },
+      "out": {
+        "none": "None",
+        "fade": "Fade",
+        "shrink": "Shrink",
+        "slide-up": "Slide up"
+      },
+      "speed": {
+        "fast": "Fast",
+        "normal": "Normal",
+        "slow": "Slow"
+      },
+      "wholeClipToggle": "Animate the whole caption track (start and end only)"
     }
   }
 }

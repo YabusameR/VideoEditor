@@ -565,6 +565,7 @@
       "invert": "反転"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter でカーソル位置からテロップを分けられます。先頭で Backspace を押すと前のテロップとつながります。",
       "title": "字幕",
       "multiSelectHint": "{{segments}}個のセグメントを選択中・合計{{cues}}個の字幕。スタイルはすべてに適用されます。個々の字幕を編集するには1つのセグメントを選択してください。",
       "trackLabel": "トラック{{number}}",
@@ -882,6 +883,32 @@
     "colorPanel": {
       "emptyState": "グレーディングするクリップを選択してください",
       "adjustmentLayerLabel": "グレーディング"
+    },
+    "subtitleAnimation": {
+      "title": "テロップの切り替わりアニメーション",
+      "hint": "テロップが1つずつ出るとき・消えるときに毎回動きます。選んだテロップにだけ付きます。",
+      "inLabel": "出るとき",
+      "outLabel": "消えるとき",
+      "speedLabel": "速さ",
+      "in": {
+        "none": "なし",
+        "fade": "フェード",
+        "pop": "ポップ",
+        "slide-up": "下から",
+        "zoom-in": "ズーム"
+      },
+      "out": {
+        "none": "なし",
+        "fade": "フェード",
+        "shrink": "縮む",
+        "slide-up": "上へ"
+      },
+      "speed": {
+        "fast": "速い",
+        "normal": "ふつう",
+        "slow": "ゆっくり"
+      },
+      "wholeClipToggle": "テロップ全体にアニメーションを付ける（最初と最後だけ）"
     }
   }
 }

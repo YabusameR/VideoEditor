@@ -435,7 +435,19 @@ export type SubtitleSegmentItem = BaseTimelineItem &
     /** Cue list, sorted by `startSeconds`. Times are segment-relative. */
     cues: SubtitleSegmentCue[]
     color: string
+    /** Entrance/exit animation played on every cue, not once per segment. */
+    cueAnimation?: SubtitleCueAnimation
   }
+
+export type SubtitleCueInAnimation = 'fade' | 'pop' | 'slide-up' | 'zoom-in'
+export type SubtitleCueOutAnimation = 'fade' | 'shrink' | 'slide-up'
+
+export interface SubtitleCueAnimation {
+  in?: SubtitleCueInAnimation
+  out?: SubtitleCueOutAnimation
+  /** Length of each entrance/exit in seconds (capped to half the cue). */
+  durationSeconds?: number
+}
 
 export type SubtitleSegmentSource =
   | {

@@ -337,6 +337,10 @@
       "adjustClipVolume": "Ajuster clip volume"
     },
     "emptyTitle": "Faites glisser des médias ici pour commencer le montage",
-    "emptyDescription": "Déposez des clips sur les pistes, puis appuyez sur Espace pour prévisualiser."
+    "emptyDescription": "Déposez des clips sur les pistes, puis appuyez sur Espace pour prévisualiser.",
+    "subtitleStrip": {
+      "label": "Captions · {{count}}",
+      "moveBoundary": "Move the boundary after caption {{number}}"
+    }
   }
 }

@@ -24,6 +24,7 @@ import {
 import { cn } from '@/shared/ui/cn'
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { Separator } from '@/components/ui/separator'
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
 import { useEditorStore } from '@/shared/state/editor'
 import { useSelectionStore } from '@/shared/state/selection'
 import { useItemsStore, useTimelineStore } from '@/features/editor/deps/timeline-store'
@@ -38,7 +39,12 @@ import type { ClipInspectorTab } from '@/shared/state/editor'
 import type { SelectionState, SelectionActions } from '@/shared/state/selection'
 import type { TimelineState, TimelineActions } from '@/features/editor/deps/timeline-store'
 import type { TransformProperties } from '@/types/transform'
-import type { TimelineItem, VideoItem, CompositionItem } from '@/types/timeline'
+import type {
+  TimelineItem,
+  VideoItem,
+  CompositionItem,
+  SubtitleSegmentItem,
+} from '@/types/timeline'
 import { getLinkedAudioCompanion } from '@/shared/utils/linked-media'
 import { useGizmoStore } from '@/features/editor/deps/preview'
 
@@ -50,6 +56,7 @@ import { LottieSection } from './lottie-section'
 import { ShapeSection } from './shape-section'
 import { CornerPinSection } from './corner-pin-section'
 import { CompositionControlsSection } from './composition-controls-section'
+import { SubtitleAnimationSection } from './subtitle-animation-section'
 
 const LazyAudioSection = lazy(() =>
   import('./audio-section').then((module) => ({ default: module.AudioSection })),
@@ -535,6 +542,16 @@ const ClipPanelCore = memo(function ClipPanelCore({
   const showSecondTab = showAudioTab
   const showEffectsTab = visualItems.length > 0
   const visualItemIds = useMemo(() => visualItems.map((item) => item.id), [visualItems])
+  // Subtitles get per-cue animation; clip-level presets then target the rest
+  // of the selection so a caption pick never animates the video with it.
+  const subtitleItems = useMemo(
+    () => selectedItems.filter((item): item is SubtitleSegmentItem => item.type === 'subtitle'),
+    [selectedItems],
+  )
+  const nonSubtitleVisualItemIds = useMemo(
+    () => visualItems.filter((item) => item.type !== 'subtitle').map((item) => item.id),
+    [visualItems],
+  )
 
   const availableTabs = useMemo(() => {
     const tabs: ClipInspectorTab[] = []
@@ -700,6 +717,40 @@ const ClipPanelCore = memo(function ClipPanelCore({
                   <Suspense fallback={<div className="h-full rounded-md bg-muted/20" />}>
                     <LazyAnimationPresetLibrary canvas={canvas} embedded />
                   </Suspense>
+                ) : subtitleItems.length > 0 ? (
+                  <div className="flex flex-col gap-4">
+                    <SubtitleAnimationSection items={subtitleItems} />
+                    {nonSubtitleVisualItemIds.length > 0 ? (
+                      <>
+                        <Separator />
+                        <Suspense fallback={<div className="h-24 rounded-md bg-muted/20" />}>
+                          <LazyAnimationPresetLibrary
+                            canvas={canvas}
+                            embedded
+                            variant="edit"
+                            itemIds={nonSubtitleVisualItemIds}
+                          />
+                        </Suspense>
+                      </>
+                    ) : (
+                      <Collapsible>
+                        <Separator />
+                        <CollapsibleTrigger className="mt-3 text-[11px] text-muted-foreground hover:text-foreground">
+                          {t('editor.subtitleAnimation.wholeClipToggle')}
+                        </CollapsibleTrigger>
+                        <CollapsibleContent className="mt-3">
+                          <Suspense fallback={<div className="h-24 rounded-md bg-muted/20" />}>
+                            <LazyAnimationPresetLibrary
+                              canvas={canvas}
+                              embedded
+                              variant="edit"
+                              itemIds={visualItemIds}
+                            />
+                          </Suspense>
+                        </CollapsibleContent>
+                      </Collapsible>
+                    )}
+                  </div>
                 ) : (
                   <Suspense fallback={<div className="h-24 rounded-md bg-muted/20" />}>
                     <LazyAnimationPresetLibrary

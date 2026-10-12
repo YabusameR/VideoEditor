@@ -1,12 +1,4 @@
-import {
-  Suspense,
-  lazy,
-  memo,
-  useCallback,
-  useDeferredValue,
-  useMemo,
-  type ReactNode,
-} from 'react'
+import { Suspense, lazy, memo, useCallback, useDeferredValue, useMemo, type ReactNode } from 'react'
 import { Link2 } from 'lucide-react'
 import { perfMarkRender } from '@/shared/logging/perf-marks'
 import type { TimelineItem } from '@/types/timeline'
@@ -29,6 +21,7 @@ import { hasLinkedAudioCompanion } from '@/shared/utils/linked-media'
 import { formatSignedFrameDelta } from '@/shared/utils/time-utils'
 import { isGifUrl, isWebpUrl } from '@/shared/utils/media-utils'
 import { useTimelineContentPixelsPerSecond } from '../../contexts/timeline-zoom-context'
+import { SubtitleCueStrip } from './subtitle-cue-strip'
 
 const EMPTY_COMPOSITION_LOOKUP: Record<string, never> = {}
 const WAVEFORM_MIN_WIDTH_PX = 12
@@ -844,6 +837,9 @@ const DetailedClipContent = memo(function DetailedClipContent(props: ClipContent
 
   if (item.type === 'composition' || (item.type === 'audio' && item.compositionId)) {
     return <DetailedCompositionClipContent {...props} />
+  }
+  if (item.type === 'subtitle') {
+    return <SubtitleCueStrip item={item} />
   }
   return <StaticClipContent item={item} />
 })
