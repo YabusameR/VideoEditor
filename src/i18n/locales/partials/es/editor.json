@@ -565,6 +565,7 @@
       "invert": "Invertir"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter splits the caption at the cursor. Backspace at the start joins it to the previous one.",
       "title": "Subtítulo",
       "multiSelectHint": "{{segments}} segmentos seleccionados · {{cues}} subtítulos en total. El estilo se aplica a todos. Selecciona un solo segmento para editar subtítulos individuales.",
       "trackLabel": "Pista {{number}}",

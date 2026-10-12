@@ -337,6 +337,10 @@
       "adjustClipVolume": "Anpassen Clip Lautstarke"
     },
     "emptyTitle": "Ziehe Medien hierher, um mit dem Schnitt zu beginnen",
-    "emptyDescription": "Lege Clips auf Spuren ab und drücke dann die Leertaste für die Vorschau."
+    "emptyDescription": "Lege Clips auf Spuren ab und drücke dann die Leertaste für die Vorschau.",
+    "subtitleStrip": {
+      "label": "Captions · {{count}}",
+      "moveBoundary": "Move the boundary after caption {{number}}"
+    }
   }
 }

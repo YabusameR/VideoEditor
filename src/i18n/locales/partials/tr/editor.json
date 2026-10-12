@@ -565,6 +565,7 @@
       "invert": "Ters çevir"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter splits the caption at the cursor. Backspace at the start joins it to the previous one.",
       "title": "Altyazı",
       "multiSelectHint": "{{segments}} segment seçildi · toplam {{cues}} ipucu. Stil hepsine uygulanır. Tek tek ipuçlarını düzenlemek için tek bir segment seçin.",
       "trackLabel": "İz {{number}}",

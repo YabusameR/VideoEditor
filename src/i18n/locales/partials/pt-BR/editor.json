@@ -565,6 +565,7 @@
       "invert": "Inverter"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter splits the caption at the cursor. Backspace at the start joins it to the previous one.",
       "title": "Legenda",
       "multiSelectHint": "{{segments}} segmentos selecionados · {{cues}} legendas no total. O estilo se aplica a todos. Selecione um único segmento para editar legendas individuais.",
       "trackLabel": "Faixa {{number}}",

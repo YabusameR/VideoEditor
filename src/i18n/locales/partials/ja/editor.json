@@ -565,6 +565,7 @@
       "invert": "反転"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter でカーソル位置からテロップを分けられます。先頭で Backspace を押すと前のテロップとつながります。",
       "title": "字幕",
       "multiSelectHint": "{{segments}}個のセグメントを選択中・合計{{cues}}個の字幕。スタイルはすべてに適用されます。個々の字幕を編集するには1つのセグメントを選択してください。",
       "trackLabel": "トラック{{number}}",

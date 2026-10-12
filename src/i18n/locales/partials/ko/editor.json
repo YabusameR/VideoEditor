@@ -565,6 +565,7 @@
       "invert": "반전"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter splits the caption at the cursor. Backspace at the start joins it to the previous one.",
       "title": "자막",
       "multiSelectHint": "세그먼트 {{segments}}개 선택됨 · 총 자막 {{cues}}개. 스타일은 모두에 적용됩니다. 개별 자막을 편집하려면 세그먼트 하나를 선택하세요.",
       "trackLabel": "트랙 {{number}}",

@@ -565,6 +565,7 @@
       "invert": "反转"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter splits the caption at the cursor. Backspace at the start joins it to the previous one.",
       "title": "字幕",
       "multiSelectHint": "已选择 {{segments}} 个段 · 共 {{cues}} 条字幕。样式应用于全部。选择单个段以编辑单条字幕。",
       "trackLabel": "轨道 {{number}}",
