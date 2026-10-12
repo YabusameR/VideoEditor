@@ -16,6 +16,9 @@
   // Required by `wrangler preview`, which Workers Builds runs for non-production
   // branches (PR previews). Empty: previews inherit the top-level settings.
   "previews": {},
+  // With a custom-domain route, wrangler turns workers.dev off for production;
+  // keep per-branch Preview URLs on explicitly so PRs still get a preview link.
+  "preview_urls": true,
   "routes": [
     {
       "pattern": "videoedit.vvil.jp",

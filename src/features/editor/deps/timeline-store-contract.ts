@@ -64,3 +64,8 @@ export {
   createMotionClip,
   openComposition,
 } from '@/features/timeline/stores/actions/composition-actions'
+export {
+  appendMediaToTimeline,
+  placeAudioAtPlayhead,
+} from '@/features/timeline/stores/actions/quick-place-actions'
+export { splitAllItemsAtFrame } from '@/features/timeline/stores/actions/item-edit-actions'

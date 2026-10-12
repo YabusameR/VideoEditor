@@ -7,7 +7,7 @@ import type { ImperativePanelHandle } from 'react-resizable-panels'
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable'
 import { ErrorBoundary } from '@/app/error-boundary'
 import { ShortToolbar } from './short-toolbar'
-import { MediaSidebar } from './media-sidebar'
+import { WizardPanel } from './shorts-wizard/wizard-panel'
 import { PropertiesSidebar } from './properties-sidebar'
 import { PreviewArea } from './preview-area'
 import { MotionPreviewArea, MotionTimelineDock } from './compose-workspace/compose-layout'
@@ -397,7 +397,6 @@ export const LoadedEditor = memo(function LoadedEditor({
   const editorLayoutCssVars = getEditorLayoutCssVars(editorLayout)
   const syncSidebarLayout = useEditorStore((s) => s.syncSidebarLayout)
   const propertiesFullColumn = useEditorStore((s) => s.propertiesFullColumn)
-  const mediaFullColumn = useEditorStore((s) => s.mediaFullColumn)
   const workspace = useEditorStore((s) => s.workspace)
   const setWorkspace = useEditorStore((s) => s.setWorkspace)
   const isMaskEditingActive = useMaskEditorStore((s) => s.isEditing)
@@ -697,10 +696,11 @@ export const LoadedEditor = memo(function LoadedEditor({
       {/* Main Layout: Full-height sidebar + vertical split */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Sidebar - Media Library (full column mode) */}
-        {mediaFullColumn && !hidesDefaultSidebars && (
+        {/* Left column: the step-by-step wizard (replaces the media sidebar) */}
+        {!hidesDefaultSidebars && (
           <InteractionLockRegion locked={isMaskEditingActive}>
             <ErrorBoundary level="feature">
-              <MediaSidebar />
+              <WizardPanel fps={project.fps} onExport={handleExport} />
             </ErrorBoundary>
           </InteractionLockRegion>
         )}
@@ -740,15 +740,6 @@ export const LoadedEditor = memo(function LoadedEditor({
               maxSize={100 - editorLayout.timelineMinSize}
             >
               <div className="h-full flex overflow-hidden relative">
-                {/* Left Sidebar - Media Library (inline with preview) */}
-                {!mediaFullColumn && (
-                  <InteractionLockRegion locked={isMaskEditingActive}>
-                    <ErrorBoundary level="feature">
-                      <MediaSidebar />
-                    </ErrorBoundary>
-                  </InteractionLockRegion>
-                )}
-
                 {/* Center - Preview */}
                 <ErrorBoundary level="feature">
                   {isMotionWorkspace ? (

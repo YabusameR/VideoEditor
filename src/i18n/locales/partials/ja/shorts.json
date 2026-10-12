@@ -14,12 +14,96 @@
       "platforms": {
         "off": "セーフゾーン: なし",
         "tiktok": "TikTok",
-        "reels": "Instagram リール",
         "shorts": "YouTube ショート"
       }
     },
     "newProject": {
-      "namePrefix": "ショート"
+      "namePrefix": "ショート",
+      "creating": "新しいショート動画を作成しています…",
+      "backToList": "プロジェクト一覧に戻る"
+    },
+    "wizard": {
+      "stepCounter": "ステップ {{current}} / {{total}}",
+      "next": "次へ",
+      "back": "戻る",
+      "steps": {
+        "import": {
+          "label": "素材",
+          "title": "素材を取り込む",
+          "description": "使いたい動画や写真を追加して、タイムラインに並べましょう。"
+        },
+        "cut": {
+          "label": "カット",
+          "title": "いらない部分をカット",
+          "description": "切りたい位置に再生ヘッドを動かして分割し、いらない部分を削除します。"
+        },
+        "captions": {
+          "label": "テロップ",
+          "title": "テロップを入れる",
+          "description": "しゃべっている内容から自動でテロップを作れます。自分で文字を足すこともできます。"
+        },
+        "sound": {
+          "label": "効果音",
+          "title": "効果音をつける",
+          "description": "入れたい場所に再生ヘッドを動かして、効果音をタップすると追加されます。"
+        },
+        "export": {
+          "label": "書き出し",
+          "title": "動画を書き出す",
+          "description": "長さを確認して、TikTok・YouTube ショート用の縦型動画（1080×1920）で書き出します。"
+        }
+      },
+      "import": {
+        "addFiles": "ファイルを選ぶ",
+        "appendAll": "タイムラインに全部並べる",
+        "appended": "{{count}} 本の素材をタイムラインに並べました",
+        "nothingToAppend": "先に動画か写真を追加してください",
+        "dropHint": "下のリストにファイルをドラッグして追加したり、素材をタイムラインに直接ドラッグすることもできます。"
+      },
+      "cut": {
+        "split": "再生ヘッドの位置で分割",
+        "deleteSelected": "選んだ部分を削除",
+        "autoSilence": "無音部分を自動でカット",
+        "noClips": "先にステップ1で素材を並べてください",
+        "nothingSelected": "タイムラインのクリップをクリックして選んでください",
+        "tips": "ショートカット: S か Ctrl+K で分割、Delete で削除、スペースで再生。"
+      },
+      "captions": {
+        "auto": "テロップを自動で作る",
+        "running": "文字起こし中…（初回は音声認識モデルのダウンロードがあります）",
+        "done": "{{count}} 本の素材にテロップを入れました",
+        "partial": "{{failed}} 本はテロップを作れませんでした",
+        "noTargets": "タイムラインにしゃべりのある動画がまだありません",
+        "addText": "文字を追加",
+        "defaultText": "テロップ",
+        "styleHint": "テロップを選ぶと、右のパネルでフォント・大きさ・色を変えられます。"
+      },
+      "sound": {
+        "preview": "{{name}} を試聴",
+        "add": "{{name}} を追加",
+        "added": "再生ヘッドの位置に「{{name}}」を追加しました",
+        "failed": "効果音を追加できませんでした",
+        "noProject": "先にプロジェクトを開いてください",
+        "names": {
+          "pop": "ポン",
+          "click": "カチッ",
+          "whoosh": "シュッ",
+          "ding": "チーン",
+          "correct": "ピンポン",
+          "wrong": "ブブー",
+          "boing": "ボヨン",
+          "impact": "ドン",
+          "sparkle": "キラーン"
+        }
+      },
+      "export": {
+        "length": "長さ",
+        "format": "形式",
+        "formatValue": "1080×1920・縦型",
+        "overTarget": "目標の {{time}} を超えています",
+        "empty": "タイムラインが空です。ステップ1で素材を並べてください",
+        "button": "動画を書き出す"
+      }
     }
   }
 }

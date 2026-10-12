@@ -14,12 +14,96 @@
       "platforms": {
         "off": "Safe zone: off",
         "tiktok": "TikTok",
-        "reels": "Instagram Reels",
         "shorts": "YouTube Shorts"
       }
     },
     "newProject": {
-      "namePrefix": "Short"
+      "namePrefix": "Short",
+      "creating": "Creating a new short…",
+      "backToList": "Back to projects"
+    },
+    "wizard": {
+      "stepCounter": "Step {{current}} of {{total}}",
+      "next": "Next",
+      "back": "Back",
+      "steps": {
+        "import": {
+          "label": "Media",
+          "title": "Add your clips",
+          "description": "Add the videos and photos you want to use, then line them up on the timeline."
+        },
+        "cut": {
+          "label": "Cut",
+          "title": "Trim the clips",
+          "description": "Move the playhead to where you want to cut, split, and delete the parts you don't need."
+        },
+        "captions": {
+          "label": "Captions",
+          "title": "Add captions",
+          "description": "Turn speech into captions automatically, or add your own text."
+        },
+        "sound": {
+          "label": "Sound",
+          "title": "Add sound effects",
+          "description": "Move the playhead to a moment and tap an effect to drop it in."
+        },
+        "export": {
+          "label": "Export",
+          "title": "Export your short",
+          "description": "Check the length, then export a 1080×1920 video ready for TikTok and YouTube Shorts."
+        }
+      },
+      "import": {
+        "addFiles": "Choose files",
+        "appendAll": "Line up all clips",
+        "appended": "Placed {{count}} clips on the timeline",
+        "nothingToAppend": "Add a video or photo first",
+        "dropHint": "You can also drag files into the list below, or drag a clip onto the timeline."
+      },
+      "cut": {
+        "split": "Split at playhead",
+        "deleteSelected": "Delete selected",
+        "autoSilence": "Cut silences automatically",
+        "noClips": "Line up some clips in step 1 first",
+        "nothingSelected": "Click a clip on the timeline to select it",
+        "tips": "Shortcuts: S or Ctrl+K to split, Delete to remove, Space to play."
+      },
+      "captions": {
+        "auto": "Generate captions",
+        "running": "Transcribing… (the first run downloads a speech model)",
+        "done": "Added captions for {{count}} clip(s)",
+        "partial": "{{failed}} clip(s) could not be captioned",
+        "noTargets": "There is no video with speech on the timeline yet",
+        "addText": "Add text",
+        "defaultText": "Your text",
+        "styleHint": "Select a caption to change its font, size and color in the panel on the right."
+      },
+      "sound": {
+        "preview": "Preview {{name}}",
+        "add": "Add {{name}}",
+        "added": "Added \"{{name}}\" at the playhead",
+        "failed": "Could not add the sound effect",
+        "noProject": "Open a project first",
+        "names": {
+          "pop": "Pop",
+          "click": "Click",
+          "whoosh": "Whoosh",
+          "ding": "Ding",
+          "correct": "Correct",
+          "wrong": "Wrong",
+          "boing": "Boing",
+          "impact": "Impact",
+          "sparkle": "Sparkle"
+        }
+      },
+      "export": {
+        "length": "Length",
+        "format": "Format",
+        "formatValue": "1080×1920 · vertical",
+        "overTarget": "Longer than your {{time}} target",
+        "empty": "The timeline is empty — add clips in step 1",
+        "button": "Export video"
+      }
     }
   }
 }

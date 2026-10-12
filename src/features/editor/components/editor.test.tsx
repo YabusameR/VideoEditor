@@ -73,8 +73,8 @@ vi.mock('./short-toolbar', () => ({
   ShortToolbar: () => <div data-testid="toolbar" />,
 }))
 
-vi.mock('./media-sidebar', () => ({
-  MediaSidebar: () => <div data-testid="media-sidebar" />,
+vi.mock('./shorts-wizard/wizard-panel', () => ({
+  WizardPanel: () => <div data-testid="wizard-panel" />,
 }))
 
 vi.mock('./properties-sidebar', () => ({

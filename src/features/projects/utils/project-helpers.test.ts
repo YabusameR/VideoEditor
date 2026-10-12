@@ -112,8 +112,8 @@ describe('generateTemplateName', () => {
 
 describe('PROJECT_TEMPLATES', () => {
   describe('structure validation', () => {
-    it('should have exactly 5 templates', () => {
-      expect(PROJECT_TEMPLATES).toHaveLength(5)
+    it('should offer exactly one (vertical) template', () => {
+      expect(PROJECT_TEMPLATES).toHaveLength(1)
     })
 
     it('should have all required fields', () => {
@@ -197,11 +197,6 @@ describe('PROJECT_TEMPLATES', () => {
         expect(template.height).toBeGreaterThanOrEqual(template.width)
       })
     })
-
-    it('should include Instagram templates', () => {
-      const instagramTemplates = PROJECT_TEMPLATES.filter((t) => t.platform === 'Instagram')
-      expect(instagramTemplates.length).toBeGreaterThan(0)
-    })
   })
 
   describe('specific template validation', () => {
@@ -211,20 +206,6 @@ describe('PROJECT_TEMPLATES', () => {
       expect(template?.width).toBe(1080)
       expect(template?.height).toBe(1920)
       expect(template?.fps).toBe(30)
-    })
-
-    it('should have Instagram Square with 1:1 aspect ratio', () => {
-      const template = PROJECT_TEMPLATES.find((t) => t.id === 'instagram-square')
-      expect(template).toBeDefined()
-      expect(template?.width).toBe(1080)
-      expect(template?.height).toBe(1080)
-    })
-
-    it('should have Instagram Portrait with 4:5 aspect ratio', () => {
-      const template = PROJECT_TEMPLATES.find((t) => t.id === 'instagram-portrait')
-      expect(template).toBeDefined()
-      expect(template?.width).toBe(1080)
-      expect(template?.height).toBe(1350)
     })
   })
 })
