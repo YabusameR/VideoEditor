@@ -13,6 +13,9 @@
     // Deep links (/editor/<id>, /projects/new …) fall back to index.html.
     "not_found_handling": "single-page-application"
   },
+  // Required by `wrangler preview`, which Workers Builds runs for non-production
+  // branches (PR previews). Empty: previews inherit the top-level settings.
+  "previews": {},
   "routes": [
     {
       "pattern": "videoedit.vvil.jp",
