@@ -595,6 +595,7 @@
       "equalizer": "Equalizer"
     },
     "captionStyleControls": {
+      "font": "Font",
       "stylePreset": "Stil-Voreinstellung",
       "color": "Farbe",
       "size": "Größe",

@@ -595,6 +595,7 @@
       "equalizer": "Ekolayzer"
     },
     "captionStyleControls": {
+      "font": "Font",
       "stylePreset": "Stil ön ayarı",
       "color": "Renk",
       "size": "Boyut",

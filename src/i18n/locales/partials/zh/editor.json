@@ -595,6 +595,7 @@
       "equalizer": "均衡器"
     },
     "captionStyleControls": {
+      "font": "Font",
       "stylePreset": "样式预设",
       "color": "颜色",
       "size": "尺寸",

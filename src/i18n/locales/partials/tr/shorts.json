@@ -76,7 +76,7 @@
         "noTargets": "There is no video with speech on the timeline yet",
         "addText": "Add text",
         "defaultText": "Your text",
-        "styleHint": "Select a caption to change its font, size and color in the panel on the right."
+        "styleHint": "Captions are placed on their own track. Select them on the timeline to change font, color, size and position in the panel on the right."
       },
       "sound": {
         "preview": "Preview {{name}}",

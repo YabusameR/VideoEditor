@@ -595,6 +595,7 @@
       "equalizer": "이퀄라이저"
     },
     "captionStyleControls": {
+      "font": "Font",
       "stylePreset": "스타일 프리셋",
       "color": "색상",
       "size": "크기",

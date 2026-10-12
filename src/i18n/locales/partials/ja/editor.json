@@ -595,6 +595,7 @@
       "equalizer": "イコライザー"
     },
     "captionStyleControls": {
+      "font": "フォント",
       "stylePreset": "スタイルプリセット",
       "color": "色",
       "size": "サイズ",

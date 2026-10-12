@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vite-plus/test'
 
 import { CAPTION_STYLE_PRESETS } from '@/shared/typography/caption-style-presets'
@@ -27,6 +27,20 @@ vi.mock('../components', () => ({
   SliderInput: () => null,
 }))
 
+vi.mock('./font-picker', () => ({
+  FontPicker: ({
+    value,
+    onValueChange,
+  }: {
+    value?: string
+    onValueChange: (fontFamily: string) => void
+  }) => (
+    <button type="button" data-current-font={value} onClick={() => onValueChange('Noto Sans JP')}>
+      Pick font
+    </button>
+  ),
+}))
+
 const netflixPreset = CAPTION_STYLE_PRESETS.find((preset) => preset.id === 'netflix')
 if (!netflixPreset) throw new Error('Netflix caption preset is required by this test')
 
@@ -43,9 +57,7 @@ const netflixCaption: TextItem = {
 
 describe('CaptionStyleControls selected styling', () => {
   it('uses neutral selected styling for the active preset and enabled background', () => {
-    render(
-      <CaptionStyleControls items={[netflixCaption]} canvasWidth={1920} canvasHeight={1080} />,
-    )
+    render(<CaptionStyleControls items={[netflixCaption]} canvasWidth={1920} canvasHeight={1080} />)
 
     for (const control of [
       screen.getByRole('button', { name: 'Netflix' }),
@@ -54,5 +66,25 @@ describe('CaptionStyleControls selected styling', () => {
       expect(control).toHaveClass('border-border/70', 'bg-secondary/60', 'text-foreground')
       expect(control).not.toHaveClass('border-primary', 'bg-primary/15')
     }
+  })
+})
+
+describe('CaptionStyleControls font', () => {
+  it('shows the current font and applies a picked font to the captions', () => {
+    const onApplyPatch = vi.fn()
+    render(
+      <CaptionStyleControls
+        items={[{ ...netflixCaption, fontFamily: 'Inter' }]}
+        canvasWidth={1080}
+        canvasHeight={1920}
+        onApplyPatch={onApplyPatch}
+      />,
+    )
+
+    const picker = screen.getByRole('button', { name: 'Pick font' })
+    expect(picker).toHaveAttribute('data-current-font', 'Inter')
+
+    fireEvent.click(picker)
+    expect(onApplyPatch).toHaveBeenCalledWith({ fontFamily: 'Noto Sans JP' })
   })
 })

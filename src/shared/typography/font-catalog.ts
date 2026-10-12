@@ -550,4 +550,83 @@ export const FONT_CATALOG: readonly FontCatalogEntry[] = [
     family: 'M PLUS 1p',
     weights: [100, 300, 400, 500, 700, 800, 900],
   },
+  // Japanese display fonts for short-video captions (all Google Fonts).
+  {
+    value: 'Zen Maru Gothic',
+    label: 'Zen Maru Gothic',
+    family: 'Zen Maru Gothic',
+    weights: [300, 400, 500, 700, 900],
+  },
+  {
+    value: 'Zen Kaku Gothic New',
+    label: 'Zen Kaku Gothic New',
+    family: 'Zen Kaku Gothic New',
+    weights: [300, 400, 500, 700, 900],
+  },
+  {
+    value: 'Kosugi Maru',
+    label: 'Kosugi Maru',
+    family: 'Kosugi Maru',
+    weights: [400],
+  },
+  {
+    value: 'Dela Gothic One',
+    label: 'Dela Gothic One',
+    family: 'Dela Gothic One',
+    weights: [400],
+  },
+  {
+    value: 'Mochiy Pop One',
+    label: 'Mochiy Pop One',
+    family: 'Mochiy Pop One',
+    weights: [400],
+  },
+  {
+    value: 'RocknRoll One',
+    label: 'RocknRoll One',
+    family: 'RocknRoll One',
+    weights: [400],
+  },
+  {
+    value: 'Reggae One',
+    label: 'Reggae One',
+    family: 'Reggae One',
+    weights: [400],
+  },
+  {
+    value: 'DotGothic16',
+    label: 'DotGothic16',
+    family: 'DotGothic16',
+    weights: [400],
+  },
+  {
+    value: 'Kiwi Maru',
+    label: 'Kiwi Maru',
+    family: 'Kiwi Maru',
+    weights: [300, 400, 500],
+  },
+  {
+    value: 'Yusei Magic',
+    label: 'Yusei Magic',
+    family: 'Yusei Magic',
+    weights: [400],
+  },
+  {
+    value: 'Hachi Maru Pop',
+    label: 'Hachi Maru Pop',
+    family: 'Hachi Maru Pop',
+    weights: [400],
+  },
+  {
+    value: 'Rampart One',
+    label: 'Rampart One',
+    family: 'Rampart One',
+    weights: [400],
+  },
+  {
+    value: 'Train One',
+    label: 'Train One',
+    family: 'Train One',
+    weights: [400],
+  },
 ]

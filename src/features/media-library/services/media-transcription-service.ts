@@ -73,6 +73,11 @@ interface InsertTranscriptAsCaptionsOptions {
   clipIds?: readonly string[]
   replaceExisting?: boolean
   selectUpdatedClips?: boolean
+  /**
+   * Style layered over the default caption preset for brand-new captions
+   * (e.g. a Japanese font). Replaced captions keep their existing style.
+   */
+  defaultStyle?: Partial<CaptionTextItemTemplate>
 }
 
 interface InsertTranscriptAsCaptionsResult {
@@ -627,12 +632,7 @@ class MediaTranscriptionService {
     // an older transcript snapshot.
     const compositionsState = useCompositionsStore.getState()
     for (const composition of compositionsState.compositions) {
-      const synced = syncTranscriptCaptionItems(
-        composition.items,
-        mediaId,
-        transcript,
-        sourceCues,
-      )
+      const synced = syncTranscriptCaptionItems(composition.items, mediaId, transcript, sourceCues)
       if (synced.updatedClipCount === 0) continue
       compositionsState.updateComposition(composition.id, { items: synced.items })
       updatedClipCount += synced.updatedClipCount
@@ -649,9 +649,7 @@ class MediaTranscriptionService {
       return synced.updatedClipCount > 0 ? { ...stash, items: synced.items } : stash
     }
     const nextStashStack = navigationState.stashStack.map(syncStash)
-    const nextMainHolder = navigationState.mainHolder
-      ? syncStash(navigationState.mainHolder)
-      : null
+    const nextMainHolder = navigationState.mainHolder ? syncStash(navigationState.mainHolder) : null
     if (updatedStashedClipCount > 0) {
       useCompositionNavigationStore.setState({
         stashStack: nextStashStack,
@@ -775,7 +773,7 @@ class MediaTranscriptionService {
         },
         styleTemplate: existingGeneratedCaptions[0]
           ? getCaptionTextItemTemplate(existingGeneratedCaptions[0])
-          : defaultCaptionTemplate,
+          : ({ ...defaultCaptionTemplate, ...options.defaultStyle } as CaptionTextItemTemplate),
       })
 
       if (!clipCaptionItem) {
