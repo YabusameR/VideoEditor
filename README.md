@@ -12,10 +12,10 @@
 
 ```bash
 npx wrangler login   # 初回のみ
-npm run deploy       # ビルドしてデプロイ
+npm run deploy       # ビルドしてデプロイ（ビルドは wrangler.jsonc の build.command で自動実行）
 ```
 
-Cloudflare ダッシュボードの Workers Builds（Git 連携）を使う場合は、ビルドコマンド `npm ci && npm run build`、デプロイコマンド `npx wrangler@4 deploy` を指定してください。
+Cloudflare ダッシュボードの Workers Builds（Git 連携）では、デプロイコマンド `npx wrangler deploy` だけで動きます（ビルドコマンドは空でも可。`npm run build` を指定するとビルドが二重に走ります）。
 
 ---
 

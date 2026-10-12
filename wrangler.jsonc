@@ -2,6 +2,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "videoeditor",
   "compatibility_date": "2026-10-01",
+  // `wrangler deploy` builds first, so Workers Builds works even with an empty
+  // build command in the dashboard.
+  "build": {
+    "command": "npm run build"
+  },
   // Static SPA: no Worker script, Cloudflare serves the Vite build directly.
   "assets": {
     "directory": "./dist",
