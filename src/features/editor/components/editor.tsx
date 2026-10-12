@@ -6,13 +6,12 @@ import { i18n } from '@/i18n'
 import type { ImperativePanelHandle } from 'react-resizable-panels'
 import { ResizablePanelGroup, ResizablePanel, ResizableHandle } from '@/components/ui/resizable'
 import { ErrorBoundary } from '@/app/error-boundary'
-import { Toolbar } from './toolbar'
+import { ShortToolbar } from './short-toolbar'
 import { MediaSidebar } from './media-sidebar'
 import { PropertiesSidebar } from './properties-sidebar'
 import { PreviewArea } from './preview-area'
 import { MotionPreviewArea, MotionTimelineDock } from './compose-workspace/compose-layout'
 import { InteractionLockRegion } from './interaction-lock-region'
-import { AudioMeterPanel } from './audio-meter-panel'
 import {
   importTimeline,
   importBentoLayoutDialog,
@@ -400,6 +399,7 @@ export const LoadedEditor = memo(function LoadedEditor({
   const propertiesFullColumn = useEditorStore((s) => s.propertiesFullColumn)
   const mediaFullColumn = useEditorStore((s) => s.mediaFullColumn)
   const workspace = useEditorStore((s) => s.workspace)
+  const setWorkspace = useEditorStore((s) => s.setWorkspace)
   const isMaskEditingActive = useMaskEditorStore((s) => s.isEditing)
   const hasRefreshedMigrationStateRef = useRef(false)
   const timelinePanelRef = useRef<ImperativePanelHandle>(null)
@@ -541,6 +541,12 @@ export const LoadedEditor = memo(function LoadedEditor({
     syncSidebarLayout(editorLayout)
   }, [editorLayout, syncSidebarLayout])
 
+  // The short-video editor only exposes the Edit workspace; pull back any
+  // persisted (or hotkey-triggered) switch to Color / Motion.
+  useEffect(() => {
+    if (workspace !== 'edit') setWorkspace('edit')
+  }, [workspace, setWorkspace])
+
   // Apply the per-workspace timeline split when switching workspaces:
   // snapshot the outgoing workspace's split, then restore the incoming
   // workspace's saved split (or its preset default on first visit).
@@ -678,8 +684,7 @@ export const LoadedEditor = memo(function LoadedEditor({
 
       {/* Top Toolbar */}
       <InteractionLockRegion locked={isMaskEditingActive}>
-        <Toolbar
-          projectId={projectId}
+        <ShortToolbar
           project={project}
           onSave={handleSave}
           onExport={handleExport}
@@ -788,7 +793,6 @@ export const LoadedEditor = memo(function LoadedEditor({
                         </Suspense>
                       )}
                     </div>
-                    <AudioMeterPanel />
                   </div>
                 </ErrorBoundary>
               </InteractionLockRegion>

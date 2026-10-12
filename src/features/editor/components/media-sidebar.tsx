@@ -25,6 +25,7 @@ import { motion, useReducedMotion } from 'motion/react'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/shared/ui/cn'
 import { useEditorStore } from '@/shared/state/editor'
+import type { EditorSidebarTab } from '@/config/editor-workspaces'
 import {
   useCompositionNavigationStore,
   useCompositionsStore,
@@ -286,6 +287,16 @@ const TEXT_TEMPLATE_GROUPS: ReadonlyArray<{
 const DEFAULT_TEXT_TEMPLATE_LABEL = 'Text'
 const ADD_TEXT_TEMPLATE_LABEL = 'Add Text'
 
+/** Sidebar tabs shown in the short-video editor (Lottie and AI tabs are hidden). */
+const SHORTS_SIDEBAR_TABS: ReadonlySet<EditorSidebarTab> = new Set<EditorSidebarTab>([
+  'media',
+  'text',
+  'shapes',
+  'effects',
+  'transitions',
+  'transcript',
+])
+
 export const MediaSidebar = memo(function MediaSidebar() {
   const { t } = useTranslation()
   const editorDensity = useSettingsStore((s) => s.editorDensity)
@@ -309,6 +320,10 @@ export const MediaSidebar = memo(function MediaSidebar() {
     if (activeTab === 'ai') setAiTabActivated(true)
     if (activeTab === 'lottie') setLottieTabActivated(true)
   }, [activeTab])
+  // Short-video mode hides some tabs; a persisted hidden tab falls back to media.
+  useEffect(() => {
+    if (!SHORTS_SIDEBAR_TABS.has(activeTab)) setActiveTab('media')
+  }, [activeTab, setActiveTab])
 
   // The collapsed panel stays mounted (clipped to 0 width, see NOTE below), so
   // its buttons/inputs would remain in the tab order while invisible. Mark the
@@ -431,8 +446,7 @@ export const MediaSidebar = memo(function MediaSidebar() {
     const { tracks, fps, addItemOnNewTrack } = useTimelineStore.getState()
     const { activeTrackId, selectItems, setActiveTrack } = useSelectionStore.getState()
     const currentProject = useProjectStore.getState().currentProject
-    const activeCompositionId =
-      useCompositionNavigationStore.getState().activeCompositionId
+    const activeCompositionId = useCompositionNavigationStore.getState().activeCompositionId
     const activeComposition = activeCompositionId
       ? useCompositionsStore.getState().getComposition(activeCompositionId)
       : undefined
@@ -543,7 +557,7 @@ export const MediaSidebar = memo(function MediaSidebar() {
     { id: 'lottie' as const, icon: Sticker, label: t('lottieBrowser.tabLabel') },
     { id: 'transcript' as const, icon: Captions, label: t('transcript.tabLabel') },
     { id: 'ai' as const, icon: WandSparkles, label: t('editor.mediaSidebar.ai') },
-  ]
+  ].filter(({ id }) => SHORTS_SIDEBAR_TABS.has(id))
 
   const shouldSuppressGeneratedItemClick = useCallback(() => {
     if (!suppressGeneratedItemClickRef.current) {

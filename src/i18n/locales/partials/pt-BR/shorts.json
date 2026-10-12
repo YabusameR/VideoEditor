@@ -1,0 +1,25 @@
+{
+  "shorts": {
+    "toolbar": {
+      "durationAria": "Current length",
+      "targetDuration": "Target length",
+      "targetOption": "≤ {{time}}",
+      "overBy": "{{time}} over",
+      "more": "More",
+      "export": "Export video"
+    },
+    "safeZone": {
+      "label": "Safe zone guide",
+      "overlayLabel": "{{platform}} safe zone",
+      "platforms": {
+        "off": "Safe zone: off",
+        "tiktok": "TikTok",
+        "reels": "Instagram Reels",
+        "shorts": "YouTube Shorts"
+      }
+    },
+    "newProject": {
+      "namePrefix": "Short"
+    }
+  }
+}

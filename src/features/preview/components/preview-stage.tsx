@@ -27,6 +27,7 @@ import {
   resolvePlaybackColdStartVisibleFrame,
 } from '../utils/playback-cold-start-event'
 import { DomTextScrubOverlay } from './dom-text-scrub-overlay'
+import { SafeZoneOverlay } from './safe-zone-overlay'
 
 interface PreviewStageProps {
   backgroundRef: RefObject<HTMLDivElement | null>
@@ -474,6 +475,7 @@ export const PreviewStage = memo(function PreviewStage({
                 />
               )}
 
+              <SafeZoneOverlay />
               {perfPanel}
               {comparisonOverlay}
               {isSplitGradeComparison && (

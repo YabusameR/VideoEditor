@@ -20,6 +20,8 @@ import {
   PROJECT_TEMPLATES,
 } from '../utils/validation'
 import { getProjectFpsOptions } from '../utils/project-fps'
+import { generateTemplateName } from '../utils/project-helpers'
+import { useProjectStore } from '../stores/project-store'
 import { ProjectTemplatePicker } from './project-template-picker'
 
 interface ProjectFormBaseProps {
@@ -74,22 +76,38 @@ function ProjectFormBase({
     mode: 'onChange',
   })
 
-  const matchTemplateId = (width: number, height: number) =>
-    PROJECT_TEMPLATES.find((t) => t.width === width && t.height === height)?.id ?? 'custom'
+  const matchTemplateId = (width: number, height: number, fps: number) =>
+    PROJECT_TEMPLATES.find((t) => t.width === width && t.height === height && t.fps === fps)?.id ??
+    'custom'
 
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | undefined>(() =>
-    matchTemplateId(resolvedDefaultValues.width, resolvedDefaultValues.height),
+    matchTemplateId(
+      resolvedDefaultValues.width,
+      resolvedDefaultValues.height,
+      resolvedDefaultValues.fps,
+    ),
   )
 
   useEffect(() => {
     reset(resolvedDefaultValues)
-  }, [reset, resolvedDefaultValues])
+    // New shorts get a ready-to-go name so creating one is a single click.
+    if (!isEditing && !resolvedDefaultValues.name) {
+      const existingNames = useProjectStore.getState().projects.map((p) => p.name)
+      setValue('name', generateTemplateName(t('shorts.newProject.namePrefix'), existingNames), {
+        shouldValidate: true,
+      })
+    }
+  }, [reset, resolvedDefaultValues, isEditing, setValue, t])
 
   useEffect(() => {
     setSelectedTemplateId(
-      matchTemplateId(resolvedDefaultValues.width, resolvedDefaultValues.height),
+      matchTemplateId(
+        resolvedDefaultValues.width,
+        resolvedDefaultValues.height,
+        resolvedDefaultValues.fps,
+      ),
     )
-  }, [resolvedDefaultValues.height, resolvedDefaultValues.width])
+  }, [resolvedDefaultValues.height, resolvedDefaultValues.width, resolvedDefaultValues.fps])
 
   const fps = watch('fps')
   const fpsOptions = useMemo(() => getProjectFpsOptions(fps), [fps])
@@ -154,25 +172,29 @@ function ProjectFormBase({
                   )}
                 </div>
 
-                {/* Description */}
-                <div>
-                  <label
-                    htmlFor="description"
-                    className="block text-sm font-medium text-foreground mb-2"
-                  >
-                    {t('projects.form.description')}
-                  </label>
-                  <textarea
-                    id="description"
-                    rows={4}
-                    {...register('description')}
-                    className="w-full px-3 py-2 bg-secondary border border-input rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-[color,border-color,box-shadow] duration-150 resize-none"
-                    placeholder={t('projects.form.descriptionPlaceholder')}
-                  />
-                  {errors.description && (
-                    <p className="mt-1.5 text-sm text-destructive">{errors.description.message}</p>
-                  )}
-                </div>
+                {/* Description (edit only — creating a short stays one step) */}
+                {isEditing && (
+                  <div>
+                    <label
+                      htmlFor="description"
+                      className="block text-sm font-medium text-foreground mb-2"
+                    >
+                      {t('projects.form.description')}
+                    </label>
+                    <textarea
+                      id="description"
+                      rows={4}
+                      {...register('description')}
+                      className="w-full px-3 py-2 bg-secondary border border-input rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-[color,border-color,box-shadow] duration-150 resize-none"
+                      placeholder={t('projects.form.descriptionPlaceholder')}
+                    />
+                    {errors.description && (
+                      <p className="mt-1.5 text-sm text-destructive">
+                        {errors.description.message}
+                      </p>
+                    )}
+                  </div>
+                )}
 
                 {/* Frame Rate */}
                 <div>

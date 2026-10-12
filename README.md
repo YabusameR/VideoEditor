@@ -1,3 +1,26 @@
+# VideoEditor — ショート動画エディタ
+
+[FreeCut](https://github.com/walterlow/freecut)（MIT License）をベースに、TikTok / Instagram リール / YouTube ショート向けに UI を絞り込んだブラウザ動画エディタです。
+
+- 新規プロジェクトは縦型 1080×1920 が既定（9:16 / 4:5 / 1:1 のプリセットのみ）
+- ツールバーに「尺ゲージ」（15秒〜3分の目標に対する現在の長さ）と各プラットフォームの UI セーフゾーン表示
+- Color / Motion ワークスペース、AI・Lottie タブ、オーディオメーターなどを非表示にしたシンプル構成
+
+## Cloudflare Workers へのデプロイ
+
+ビルド成果物（`dist/`）を Workers Static Assets で配信します（`wrangler.jsonc`、ヘッダーは `public/_headers`）。カスタムドメイン `videoedit.vvil.jp` は `wrangler.jsonc` の `routes` で割り当て済みです（`vvil.jp` ゾーンが同じ Cloudflare アカウントにある必要があります）。
+
+```bash
+npx wrangler login   # 初回のみ
+npm run deploy       # ビルドしてデプロイ（ビルドは wrangler.jsonc の build.command で自動実行）
+```
+
+Cloudflare ダッシュボードの Workers Builds（Git 連携）では、デプロイコマンド `npx wrangler deploy` だけで動きます（ビルドコマンドは空でも可。`npm run build` を指定するとビルドが二重に走ります）。
+
+---
+
+以下は元の FreeCut の README です。
+
 # FreeCut
 
 **[freecut.net](http://freecut.net/)**
