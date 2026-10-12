@@ -112,8 +112,8 @@ describe('generateTemplateName', () => {
 
 describe('PROJECT_TEMPLATES', () => {
   describe('structure validation', () => {
-    it('should have exactly 6 templates', () => {
-      expect(PROJECT_TEMPLATES).toHaveLength(6)
+    it('should have exactly 5 templates', () => {
+      expect(PROJECT_TEMPLATES).toHaveLength(5)
     })
 
     it('should have all required fields', () => {
@@ -188,43 +188,23 @@ describe('PROJECT_TEMPLATES', () => {
   })
 
   describe('platform coverage', () => {
-    it('should include YouTube templates', () => {
-      const youtubeTemplates = PROJECT_TEMPLATES.filter((t) => t.platform === 'YouTube')
-      expect(youtubeTemplates.length).toBeGreaterThan(0)
+    it('should put the vertical (9:16) template first as the default', () => {
+      expect(PROJECT_TEMPLATES[0]?.id).toBe('vertical-9-16')
     })
 
-    it('should include vertical (9:16) template', () => {
-      const verticalTemplate = PROJECT_TEMPLATES.find((t) => t.id === 'vertical-9-16')
-      expect(verticalTemplate).toBeDefined()
-      expect(verticalTemplate?.width).toBe(1080)
-      expect(verticalTemplate?.height).toBe(1920)
+    it('should only offer short-form aspect ratios', () => {
+      PROJECT_TEMPLATES.forEach((template) => {
+        expect(template.height).toBeGreaterThanOrEqual(template.width)
+      })
     })
 
     it('should include Instagram templates', () => {
       const instagramTemplates = PROJECT_TEMPLATES.filter((t) => t.platform === 'Instagram')
       expect(instagramTemplates.length).toBeGreaterThan(0)
     })
-
-    it('should include Twitter/X template', () => {
-      const twitterTemplate = PROJECT_TEMPLATES.find((t) => t.platform === 'Twitter/X')
-      expect(twitterTemplate).toBeDefined()
-    })
-
-    it('should include LinkedIn template', () => {
-      const linkedinTemplate = PROJECT_TEMPLATES.find((t) => t.platform === 'LinkedIn')
-      expect(linkedinTemplate).toBeDefined()
-    })
   })
 
   describe('specific template validation', () => {
-    it('should have YouTube 1080p with correct dimensions', () => {
-      const template = PROJECT_TEMPLATES.find((t) => t.id === 'youtube-1080p')
-      expect(template).toBeDefined()
-      expect(template?.width).toBe(1920)
-      expect(template?.height).toBe(1080)
-      expect(template?.fps).toBe(30)
-    })
-
     it('should have vertical-9-16 with correct dimensions', () => {
       const template = PROJECT_TEMPLATES.find((t) => t.id === 'vertical-9-16')
       expect(template).toBeDefined()

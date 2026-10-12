@@ -1,0 +1,25 @@
+{
+  "shorts": {
+    "toolbar": {
+      "durationAria": "現在の長さ",
+      "targetDuration": "目標の長さ",
+      "targetOption": "{{time}} 以内",
+      "overBy": "{{time}} オーバー",
+      "more": "その他",
+      "export": "動画を書き出し"
+    },
+    "safeZone": {
+      "label": "セーフゾーン表示",
+      "overlayLabel": "{{platform}} のセーフゾーン",
+      "platforms": {
+        "off": "セーフゾーン: なし",
+        "tiktok": "TikTok",
+        "reels": "Instagram リール",
+        "shorts": "YouTube ショート"
+      }
+    },
+    "newProject": {
+      "namePrefix": "ショート"
+    }
+  }
+}

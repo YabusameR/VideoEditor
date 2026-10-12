@@ -1,5 +1,5 @@
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite-plus/test'
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import { cleanup, render, waitFor } from '@testing-library/react'
 import type { ReactNode } from 'react'
 
 const mocks = vi.hoisted(() => ({
@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   setPreviewQuality: vi.fn(),
   toggleSnap: vi.fn(),
   syncSidebarLayout: vi.fn(),
+  setWorkspace: vi.fn(),
   editorState: {
     workspace: 'edit',
     propertiesFullColumn: false,
@@ -68,8 +69,8 @@ vi.mock('@/app/error-boundary', () => ({
   ErrorBoundary: ({ children }: { children: ReactNode }) => <>{children}</>,
 }))
 
-vi.mock('./toolbar', () => ({
-  Toolbar: () => <div data-testid="toolbar" />,
+vi.mock('./short-toolbar', () => ({
+  ShortToolbar: () => <div data-testid="toolbar" />,
 }))
 
 vi.mock('./media-sidebar', () => ({
@@ -103,10 +104,6 @@ vi.mock('./project-debug-panel', () => ({
 
 vi.mock('./interaction-lock-region', () => ({
   InteractionLockRegion: ({ children }: { children: ReactNode }) => <>{children}</>,
-}))
-
-vi.mock('./audio-meter-panel', () => ({
-  AudioMeterPanel: () => <div data-testid="audio-meter-panel" />,
 }))
 
 vi.mock('@/features/editor/deps/timeline-ui', () => ({
@@ -231,6 +228,7 @@ vi.mock('@/shared/state/editor', () => ({
   useEditorStore: (
     selector: (state: {
       syncSidebarLayout: typeof mocks.syncSidebarLayout
+      setWorkspace: typeof mocks.setWorkspace
       propertiesFullColumn: boolean
       mediaFullColumn: boolean
       workspace: string
@@ -238,6 +236,7 @@ vi.mock('@/shared/state/editor', () => ({
   ) =>
     selector({
       syncSidebarLayout: mocks.syncSidebarLayout,
+      setWorkspace: mocks.setWorkspace,
       propertiesFullColumn: mocks.editorState.propertiesFullColumn,
       mediaFullColumn: mocks.editorState.mediaFullColumn,
       workspace: mocks.editorState.workspace,
@@ -422,45 +421,44 @@ describe('LoadedEditor migration metadata refresh', () => {
     )
   })
 
-  it('mounts the compact color navigator and fixed grading dock in the color workspace', async () => {
-    mocks.editorState.workspace = 'color'
-    mocks.editorState.propertiesFullColumn = true
+  it.each(['color', 'motion'])(
+    'switches a persisted %s workspace back to Edit in short-video mode',
+    async (workspace) => {
+      mocks.editorState.workspace = workspace
+
+      render(
+        <LoadedEditor
+          projectId="project-1"
+          project={{
+            id: 'project-1',
+            name: 'Short Project',
+            width: 1080,
+            height: 1920,
+            fps: 30,
+          }}
+          migration={{
+            storedSchemaVersion: 14,
+            currentSchemaVersion: 14,
+            requiresUpgrade: false,
+          }}
+        />,
+      )
+
+      await waitFor(() => expect(mocks.setWorkspace).toHaveBeenCalledWith('edit'))
+    },
+  )
+
+  it('leaves the Edit workspace alone', () => {
+    mocks.editorState.workspace = 'edit'
 
     render(
       <LoadedEditor
         projectId="project-1"
         project={{
           id: 'project-1',
-          name: 'Color Project',
-          width: 1920,
-          height: 1080,
-          fps: 30,
-        }}
-        migration={{
-          storedSchemaVersion: 9,
-          currentSchemaVersion: 9,
-          requiresUpgrade: false,
-        }}
-      />,
-    )
-
-    expect(await screen.findByTestId('color-grading-dock')).toBeInTheDocument()
-    expect(screen.getByTestId('color-timeline-navigator')).toBeInTheDocument()
-    expect(screen.queryByTestId('timeline')).not.toBeInTheDocument()
-    expect(screen.queryByTestId('properties-sidebar')).not.toBeInTheDocument()
-  })
-
-  it('mounts Motion in the shared editor shell and swaps only the classic Timeline', async () => {
-    mocks.editorState.workspace = 'motion'
-
-    render(
-      <LoadedEditor
-        projectId="project-1"
-        project={{
-          id: 'project-1',
-          name: 'Motion Project',
-          width: 1920,
-          height: 1080,
+          name: 'Short Project',
+          width: 1080,
+          height: 1920,
           fps: 30,
         }}
         migration={{
@@ -471,10 +469,6 @@ describe('LoadedEditor migration metadata refresh', () => {
       />,
     )
 
-    expect(await screen.findByTestId('motion-timeline-dock')).toBeInTheDocument()
-    expect(screen.getByTestId('motion-preview-area')).toBeInTheDocument()
-    expect(screen.queryByTestId('timeline')).not.toBeInTheDocument()
-    expect(screen.getByTestId('media-sidebar')).toBeInTheDocument()
-    expect(screen.getByTestId('properties-sidebar')).toBeInTheDocument()
+    expect(mocks.setWorkspace).not.toHaveBeenCalled()
   })
 })

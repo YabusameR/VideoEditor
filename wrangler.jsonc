@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "videoeditor",
+  "compatibility_date": "2026-10-01",
+  // Static SPA: no Worker script, Cloudflare serves the Vite build directly.
+  "assets": {
+    "directory": "./dist",
+    // Deep links (/editor/<id>, /projects/new …) fall back to index.html.
+    "not_found_handling": "single-page-application"
+  },
+  "routes": [
+    {
+      "pattern": "videoedit.vvil.jp",
+      "custom_domain": true
+    }
+  ]
+}

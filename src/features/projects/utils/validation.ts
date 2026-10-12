@@ -1,10 +1,5 @@
 import { z } from 'zod'
 import { i18n } from '@/i18n'
-import {
-  DEFAULT_PROJECT_FPS,
-  DEFAULT_PROJECT_HEIGHT,
-  DEFAULT_PROJECT_WIDTH,
-} from '@/shared/projects/defaults'
 import { isAllowedProjectFps } from './project-fps'
 
 /**
@@ -75,19 +70,10 @@ export interface ProjectTemplate {
 }
 
 /**
- * Project templates for common platforms
- * 6 preset configurations with collision-free naming
+ * Project templates for short-form platforms. Vertical 9:16 comes first and is
+ * the default; square and 4:5 cover feed posts.
  */
 export const PROJECT_TEMPLATES: readonly ProjectTemplate[] = [
-  {
-    id: 'youtube-1080p',
-    platform: 'YouTube',
-    name: 'YouTube 1080p',
-    namePrefix: 'YouTube',
-    width: 1920,
-    height: 1080,
-    fps: 30,
-  },
   {
     id: 'vertical-9-16',
     platform: 'Vertical',
@@ -98,12 +84,21 @@ export const PROJECT_TEMPLATES: readonly ProjectTemplate[] = [
     fps: 30,
   },
   {
-    id: 'instagram-square',
-    platform: 'Instagram',
-    name: 'Instagram Square',
-    namePrefix: 'Instagram Square',
+    id: 'vertical-9-16-60fps',
+    platform: 'Vertical',
+    name: 'Vertical 60fps',
+    namePrefix: 'Vertical 60fps',
     width: 1080,
-    height: 1080,
+    height: 1920,
+    fps: 60,
+  },
+  {
+    id: 'vertical-720p',
+    platform: 'Vertical',
+    name: 'Vertical 720p',
+    namePrefix: 'Vertical 720p',
+    width: 720,
+    height: 1280,
     fps: 30,
   },
   {
@@ -116,24 +111,18 @@ export const PROJECT_TEMPLATES: readonly ProjectTemplate[] = [
     fps: 30,
   },
   {
-    id: 'twitter-x',
-    platform: 'Twitter/X',
-    name: 'Twitter/X',
-    namePrefix: 'Twitter/X',
-    width: 1200,
-    height: 675,
-    fps: 30,
-  },
-  {
-    id: 'linkedin',
-    platform: 'LinkedIn',
-    name: 'LinkedIn',
-    namePrefix: 'LinkedIn',
-    width: 1200,
-    height: 627,
+    id: 'instagram-square',
+    platform: 'Instagram',
+    name: 'Instagram Square',
+    namePrefix: 'Instagram Square',
+    width: 1080,
+    height: 1080,
     fps: 30,
   },
 ] as const
+
+/** Template new projects start from. */
+export const DEFAULT_PROJECT_TEMPLATE = PROJECT_TEMPLATES[0]!
 
 /**
  * Default form values
@@ -141,9 +130,9 @@ export const PROJECT_TEMPLATES: readonly ProjectTemplate[] = [
 export const DEFAULT_PROJECT_VALUES: ProjectFormData = {
   name: '',
   description: '',
-  width: DEFAULT_PROJECT_WIDTH,
-  height: DEFAULT_PROJECT_HEIGHT,
-  fps: DEFAULT_PROJECT_FPS,
+  width: DEFAULT_PROJECT_TEMPLATE.width,
+  height: DEFAULT_PROJECT_TEMPLATE.height,
+  fps: DEFAULT_PROJECT_TEMPLATE.fps,
 }
 
 /**

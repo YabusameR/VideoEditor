@@ -62,6 +62,8 @@ export function ProjectTemplatePicker({
                 {resolution}
                 <span className="mx-1">•</span>
                 {aspectRatio}
+                <span className="mx-1">•</span>
+                {template.fps}fps
               </p>
             </div>
           </button>
