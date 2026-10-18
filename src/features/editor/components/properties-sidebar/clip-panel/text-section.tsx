@@ -15,7 +15,7 @@ import {
   WandSparkles,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
+import { ImeSafeTextarea } from '@/shared/ui/ime-safe-textarea'
 import {
   Select,
   SelectContent,
@@ -532,8 +532,7 @@ function TextSectionComposer({ items, canvas, slots }: TextSectionComposerProps)
 
   // Handlers
   const handleTextChange = useCallback(
-    (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-      const newText = e.target.value
+    (newText: string) => {
       textItems.forEach((item) => {
         updateItem(item.id, {
           text: newText,
@@ -1211,9 +1210,9 @@ function TextSectionComposer({ items, canvas, slots }: TextSectionComposerProps)
                       return (
                         <>
                           <PropertyGroupHeader className="pb-2">{config.label}</PropertyGroupHeader>
-                          <Textarea
+                          <ImeSafeTextarea
                             value={span.text}
-                            onChange={(e) => handleSpanTextChange(index, e.target.value)}
+                            onValueChange={(value) => handleSpanTextChange(index, value)}
                             placeholder={config.placeholder}
                             className="min-h-[52px] text-xs"
                             rows={config.rows}
@@ -1320,9 +1319,9 @@ function TextSectionComposer({ items, canvas, slots }: TextSectionComposerProps)
                 ))}
               </div>
             ) : (
-              <Textarea
+              <ImeSafeTextarea
                 value={sharedValues.text ?? ''}
-                onChange={handleTextChange}
+                onValueChange={handleTextChange}
                 placeholder={
                   sharedValues.text === undefined
                     ? t('editor.textSection.mixed')

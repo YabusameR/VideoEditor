@@ -337,6 +337,10 @@
       "adjustClipVolume": "クリップ音量を調整"
     },
     "emptyTitle": "編集を始めるにはメディアをここにドラッグ",
-    "emptyDescription": "クリップをトラックにドロップし、Space キーでプレビューします。"
+    "emptyDescription": "クリップをトラックにドロップし、Space キーでプレビューします。",
+    "subtitleStrip": {
+      "label": "テロップ・{{count}}件",
+      "moveBoundary": "テロップ{{number}}の後ろの区切りを動かす"
+    }
   }
 }

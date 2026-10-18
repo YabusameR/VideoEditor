@@ -1,5 +1,14 @@
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { memo, useCallback, useEffect, useMemo, useRef, type CSSProperties } from 'react'
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { Captions } from 'lucide-react'
 import { i18n } from '@/i18n'
@@ -17,6 +26,12 @@ import {
   type CueFormatFlags,
 } from '@/shared/utils/subtitle-cue-format'
 import { cn } from '@/shared/ui/cn'
+import { ImeSafeTextarea } from '@/shared/ui/ime-safe-textarea'
+import {
+  mergeCueWithPrevious,
+  splitCueAtCaret,
+  type EditableCue,
+} from '@/shared/utils/subtitle-cue-edit'
 import type {
   AudioItem,
   SubtitleSegmentItem,
@@ -221,6 +236,19 @@ const VirtualTranscriptSubtitleEditor = memo(function VirtualTranscriptSubtitleE
     [firstClip, updateItem],
   )
 
+  const replaceCues = useCallback(
+    (cues: typeof firstClip.transcriptCaptions.cues) => {
+      updateItem(firstClip.id, {
+        transcriptCaptions: {
+          ...firstClip.transcriptCaptions,
+          cues,
+          updatedAt: Date.now(),
+        },
+      } as Partial<TimelineItem>)
+    },
+    [firstClip, updateItem],
+  )
+
   const seekToCue = useCallback(
     (startSeconds: number) => {
       const sourceFps = firstClip.sourceFps ?? fps
@@ -308,6 +336,7 @@ const VirtualTranscriptSubtitleEditor = memo(function VirtualTranscriptSubtitleE
         <VirtualCueList
           cues={firstClip.transcriptCaptions.cues}
           onChange={updateCue}
+          onReplaceCues={replaceCues}
           onSeek={seekToCue}
         />
       </div>
@@ -345,6 +374,11 @@ const SingleSubtitleSegmentEditor = memo(function SingleSubtitleSegmentEditor({
       const next = cuesRef.current.map((cue) => (cue.id === cueId ? { ...cue, ...patch } : cue))
       updateItem(segment.id, { cues: next })
     },
+    [segment.id, updateItem],
+  )
+
+  const replaceCues = useCallback(
+    (cues: SubtitleSegmentItem['cues']) => updateItem(segment.id, { cues }),
     [segment.id, updateItem],
   )
 
@@ -387,7 +421,12 @@ const SingleSubtitleSegmentEditor = memo(function SingleSubtitleSegmentEditor({
           canvasHeight={canvasHeight}
         />
 
-        <VirtualCueList cues={segment.cues} onChange={updateCue} onSeek={seekToCue} />
+        <VirtualCueList
+          cues={segment.cues}
+          onChange={updateCue}
+          onReplaceCues={replaceCues}
+          onSeek={seekToCue}
+        />
       </div>
     </PropertySection>
   )
@@ -402,10 +441,18 @@ const CUE_ROW_ESTIMATE_PX = 116
  *  the cue to a zero or negative-length range. */
 const MIN_CUE_DURATION_SECONDS = 0.01
 
-interface VirtualCueListProps {
-  cues: readonly { id: string; startSeconds: number; endSeconds: number; text: string }[]
+interface VirtualCueListProps<T extends EditableCue> {
+  cues: readonly T[]
   onChange: SubtitleCueRowProps['onChange']
+  /** Write back a restructured cue list (split / merge). */
+  onReplaceCues: (cues: T[]) => void
   onSeek: SubtitleCueRowProps['onSeek']
+}
+
+/** Where to put the text cursor once a split/merge has re-rendered the list. */
+interface PendingCueFocus {
+  cueId: string
+  caret: number
 }
 
 /**
@@ -414,12 +461,37 @@ interface VirtualCueListProps {
  * even with memoed rows. The virtualizer keeps only the visible rows
  * (plus a small overscan) mounted.
  */
-const VirtualCueList = memo(function VirtualCueList({
+const VirtualCueList = memo(function VirtualCueList<T extends EditableCue>({
   cues,
   onChange,
+  onReplaceCues,
   onSeek,
-}: VirtualCueListProps) {
+}: VirtualCueListProps<T>) {
   const scrollRef = useRef<HTMLDivElement>(null)
+  const [pendingFocus, setPendingFocus] = useState<PendingCueFocus | null>(null)
+
+  // Shift+Enter: the text after the caret becomes a new cue right after.
+  const handleSplit = useCallback(
+    (cueId: string, caret: number) => {
+      const newId = crypto.randomUUID()
+      const next = splitCueAtCaret(cues, cueId, caret, newId)
+      if (!next) return
+      onReplaceCues(next)
+      setPendingFocus({ cueId: newId, caret: 0 })
+    },
+    [cues, onReplaceCues],
+  )
+
+  // Backspace at the very start of a cue: join it onto the previous one.
+  const handleMergeWithPrevious = useCallback(
+    (cueId: string) => {
+      const result = mergeCueWithPrevious(cues, cueId)
+      if (!result) return
+      onReplaceCues(result.cues)
+      setPendingFocus({ cueId: result.mergedId, caret: result.caret })
+    },
+    [cues, onReplaceCues],
+  )
 
   const virtualizer = useVirtualizer({
     count: cues.length,
@@ -431,34 +503,52 @@ const VirtualCueList = memo(function VirtualCueList({
 
   const items = virtualizer.getVirtualItems()
 
+  const clearPendingFocus = useCallback(() => setPendingFocus(null), [])
+
+  // Keep the cue that should receive focus mounted in the virtual window.
+  useEffect(() => {
+    if (!pendingFocus) return
+    const index = cues.findIndex((cue) => cue.id === pendingFocus.cueId)
+    if (index >= 0) virtualizer.scrollToIndex(index, { align: 'auto' })
+  }, [cues, pendingFocus, virtualizer])
+
   return (
-    <div ref={scrollRef} className="h-[40vh] overflow-auto pr-2">
-      <div className="relative w-full" style={{ height: `${virtualizer.getTotalSize()}px` }}>
-        {items.map((virtualRow) => {
-          const cue = cues[virtualRow.index]
-          if (!cue) return null
-          return (
-            <div
-              key={virtualRow.key}
-              ref={virtualizer.measureElement}
-              data-index={virtualRow.index}
-              className="absolute left-0 right-0 pb-2"
-              style={{ transform: `translateY(${virtualRow.start}px)` }}
-            >
-              <SubtitleCueRow
-                index={virtualRow.index}
-                cueId={cue.id}
-                text={cue.text}
-                startSeconds={cue.startSeconds}
-                endSeconds={cue.endSeconds}
-                onChange={onChange}
-                onSeek={onSeek}
-              />
-            </div>
-          )
-        })}
+    <>
+      <p className="text-[11px] text-muted-foreground">
+        {i18n.t('editor.subtitleSection.cueKeysHint')}
+      </p>
+      <div ref={scrollRef} className="h-[40vh] overflow-auto pr-2">
+        <div className="relative w-full" style={{ height: `${virtualizer.getTotalSize()}px` }}>
+          {items.map((virtualRow) => {
+            const cue = cues[virtualRow.index]
+            if (!cue) return null
+            return (
+              <div
+                key={virtualRow.key}
+                ref={virtualizer.measureElement}
+                data-index={virtualRow.index}
+                className="absolute left-0 right-0 pb-2"
+                style={{ transform: `translateY(${virtualRow.start}px)` }}
+              >
+                <SubtitleCueRow
+                  index={virtualRow.index}
+                  cueId={cue.id}
+                  text={cue.text}
+                  startSeconds={cue.startSeconds}
+                  endSeconds={cue.endSeconds}
+                  onChange={onChange}
+                  onSplit={handleSplit}
+                  onMergeWithPrevious={handleMergeWithPrevious}
+                  focusCaret={pendingFocus?.cueId === cue.id ? pendingFocus.caret : undefined}
+                  onFocusApplied={clearPendingFocus}
+                  onSeek={onSeek}
+                />
+              </div>
+            )
+          })}
+        </div>
       </div>
-    </div>
+    </>
   )
 })
 
@@ -472,6 +562,11 @@ interface SubtitleCueRowProps {
     cueId: string,
     patch: Partial<{ text: string; startSeconds: number; endSeconds: number }>,
   ) => void
+  onSplit: (cueId: string, caret: number) => void
+  onMergeWithPrevious: (cueId: string) => void
+  /** When set, focus this row's text and put the cursor at this index. */
+  focusCaret?: number
+  onFocusApplied: () => void
   onSeek?: (startSeconds: number) => void
 }
 
@@ -494,9 +589,43 @@ const SubtitleCueRow = memo(function SubtitleCueRow({
   startSeconds,
   endSeconds,
   onChange,
+  onSplit,
+  onMergeWithPrevious,
+  focusCaret,
+  onFocusApplied,
   onSeek,
 }: SubtitleCueRowProps) {
   const { t } = useTranslation()
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  useEffect(() => {
+    const textarea = textareaRef.current
+    if (focusCaret === undefined || !textarea) return
+    textarea.focus()
+    textarea.setSelectionRange(focusCaret, focusCaret)
+    onFocusApplied()
+  }, [focusCaret, onFocusApplied])
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent<HTMLTextAreaElement>) => {
+      // Never act on keys that are confirming an IME conversion.
+      if (event.nativeEvent.isComposing) return
+      const { selectionStart, selectionEnd } = event.currentTarget
+      if (event.key === 'Enter' && event.shiftKey) {
+        event.preventDefault()
+        onSplit(cueId, selectionStart)
+      } else if (
+        event.key === 'Backspace' &&
+        index > 0 &&
+        selectionStart === 0 &&
+        selectionEnd === 0
+      ) {
+        event.preventDefault()
+        onMergeWithPrevious(cueId)
+      }
+    },
+    [cueId, index, onMergeWithPrevious, onSplit],
+  )
   const parsed = useMemo(() => parseSubtitleCueText(text), [text])
   const flags = useMemo(() => getCueFormatFlags(parsed), [parsed])
 
@@ -563,11 +692,14 @@ const SubtitleCueRow = memo(function SubtitleCueRow({
           className="h-6 w-28 text-right text-xs tabular-nums"
         />
       </div>
-      <textarea
+      <ImeSafeTextarea
+        ref={textareaRef}
         value={parsed.plainText}
-        onChange={(event) => handlePlainTextChange(event.target.value)}
+        onValueChange={handlePlainTextChange}
+        onKeyDown={handleKeyDown}
+        title={t('editor.subtitleSection.cueKeysHint')}
         rows={2}
-        className="w-full resize-none rounded border border-input bg-transparent px-2 py-1 text-xs leading-snug focus:outline-none focus:ring-1 focus:ring-ring"
+        className="min-h-0 rounded px-2 py-1 text-xs leading-snug shadow-none md:text-xs"
       />
       <div className="flex items-center gap-1 pt-1">
         <FormatToggleButton

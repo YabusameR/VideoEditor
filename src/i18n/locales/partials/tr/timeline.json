@@ -333,6 +333,10 @@
       "adjustClipVolume": "Klip ses düzeyini ayarla"
     },
     "emptyTitle": "Düzenlemeye başlamak için medyayı buraya sürükleyin",
-    "emptyDescription": "Klipleri parçalara bırakın, ardından önizlemek için Boşluk tuşuna basın."
+    "emptyDescription": "Klipleri parçalara bırakın, ardından önizlemek için Boşluk tuşuna basın.",
+    "subtitleStrip": {
+      "label": "Captions · {{count}}",
+      "moveBoundary": "Move the boundary after caption {{number}}"
+    }
   }
 }

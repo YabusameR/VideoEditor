@@ -565,6 +565,7 @@
       "invert": "Invert"
     },
     "subtitleSection": {
+      "cueKeysHint": "Shift+Enter splits the caption at the cursor. Backspace at the start joins it to the previous one.",
       "title": "Subtitle",
       "multiSelectHint": "{{segments}} segments selected · {{cues}} cues total. Style applies to all. Select a single segment to edit individual cues.",
       "trackLabel": "Track {{number}}",
@@ -884,6 +885,32 @@
       "dockTitle": "Color",
       "emptyState": "Select a clip to grade",
       "adjustmentLayerLabel": "Grade"
+    },
+    "subtitleAnimation": {
+      "title": "Caption change animation",
+      "hint": "Plays on every caption as it appears and disappears. Only the selected captions are animated.",
+      "inLabel": "Appear",
+      "outLabel": "Disappear",
+      "speedLabel": "Speed",
+      "in": {
+        "none": "None",
+        "fade": "Fade",
+        "pop": "Pop",
+        "slide-up": "Slide up",
+        "zoom-in": "Zoom"
+      },
+      "out": {
+        "none": "None",
+        "fade": "Fade",
+        "shrink": "Shrink",
+        "slide-up": "Slide up"
+      },
+      "speed": {
+        "fast": "Fast",
+        "normal": "Normal",
+        "slow": "Slow"
+      },
+      "wholeClipToggle": "Animate the whole caption track (start and end only)"
     }
   }
 }
